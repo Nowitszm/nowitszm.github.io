@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
-  <title>Zeming's Wiki</title>
+  <title>iTwin.js 理论基础 - 基础工具</title>
   
     
       <meta 
         property="og:title" 
-        content="Zeming&#39;s Wiki">
+        content="iTwin.js 理论基础 - 基础工具">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/index.html">
+        content="http://example.com/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/index.html">
     
     
       <meta 
@@ -36,6 +36,26 @@
         content="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
     
     
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2021-06-25">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-06-14">
+      <meta 
+        property="og:article:author" 
+        content="zeming">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
     
   
   <script>
@@ -140,6 +160,8 @@
   
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
   
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
 <meta name="generator" content="Hexo 6.2.0"></head>
 
   <body>
@@ -231,244 +253,154 @@
         <div class="container">
           <div class="columns">
             <main class="main-column">
-  <div class="card">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - 基础工具
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2021-06-25T07:18:19.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2021-06-25</span>
+    </time>
     
-    <article class="card card-content">
-      <a href="/2022/06/14/itwin/">
-        <h1 class="post-title">
-          itwin
-        </h1>
-      </a>
-      <div class="card-excerpt">
+    
+      <span class="dot"></span>
+      <span>847 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
         
-          第一、new
-
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
         
       </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2022-06-14T12:36:05.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2022-06-14</span>
-          </time>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p><a target="_blank" rel="noopener" href="https://www.itwinjs.org/learning/frontend/tools/">
+</a><br><code>Tools</code>是指用户执行操作的JavaScript类。有两个主要工具类别，即时工具和交互式工具。</p>
+<h2 id="即时工具（Immediate-Tools）"><a href="#即时工具（Immediate-Tools）" class="headerlink" title="即时工具（Immediate Tools）"></a>即时工具（Immediate Tools）</h2><hr>
+<p>即时工具无需进一步输入即可立即执行其分配的任务。它们不会成为活动工具，而是作为工具的直接子类实现。即时工具最大的特点是用户通过工具的调用直接导致应用程序状态发生改变。</p>
+<h2 id="交互式工具（Interactive-Tools）"><a href="#交互式工具（Interactive-Tools）" class="headerlink" title="交互式工具（Interactive Tools）"></a>交互式工具（Interactive Tools）</h2><hr>
+<p>有三种交互式工具分类，每一种都是通过对<code>InteractiveTool</code>进行子类化来实现的，来最好地满足特定的目标。</p>
+<ul>
+<li><code>ViewTool</code>操纵视图的交互式工具。例如执行平移、缩放和旋转等查看操作。<ul>
+<li>在执行过程中暂停活动工具，完成后恢复活动工具。</li>
+<li>前端软件包提供了一套全面的视图查看工具；大多数iTwin.js应用程序不需要实现自己的工具。</li>
+</ul>
+</li>
+<li><code>InputCollector</code>用于通过捕捉或定位iModel中的元素来收集当前基本工具的输入。<ul>
+<li><code>InputCollector</code>将挂起活动的<code>PrimitiveTool</code>，并且可以由<code>ViewTool</code>挂起。</li>
+<li>当工具冲突时不修改 iModel 内容。</li>
+<li>前端包括几个AccuDrawShortcuts实现。</li>
+</ul>
+</li>
+<li><code>PrimitiveTool</code>用于与iModel的图形交互，可用于实现创建或修改几何图元的工具。<ul>
+<li>调用时，变成为活动工具，对用户输入（如数据点、鼠标移动、触摸、按键和重置）作出反应。</li>
+<li><code>PrimitiveTool</code>是iTwin实现的最常见的工具类型。</li>
+</ul>
+</li>
+</ul>
+<h2 id="工具调用"><a href="#工具调用" class="headerlink" title="工具调用"></a>工具调用</h2><hr>
+<pre><code> 通常通过单击相关图标或使用命令解析器调用工具。可以使用`ToolRegistry.run`方法以编程方式调用工具，该方法将 `toolId `作为其第一个参数，然后允许将可选参数传递给工具的构造函数及其 `run `方法。
+</code></pre>
+<h2 id="工具管理"><a href="#工具管理" class="headerlink" title="工具管理"></a>工具管理</h2><hr>
+<p><code>ToolAdmin</code>类监视来自视图窗口的低级输入的集合（点击事件、移动事件、触摸事件、计时器事件等）;将这些输入解释为工具可以轻松处理的高级事件（iTwin.js坐标中的数据点，运动事件等，并应用了适当的锁定和精确捕捉校正）;并将这些输入路由到相应的工具。<br>解释的高级事件的路由如下：</p>
+<ul>
+<li>如果存在激活的工具，则事件将定向到该工具。激活的工具可以处理特定事件，也可以忽略它。</li>
+<li>如果激活的工具不处理特定事件，则可能会将其定向到<code>Idle Tool</code></li>
+</ul>
+<p>如上所述，<code>ViewTool</code>或<code>Input Collector</code>可以暂时中断<code>Primitive tool</code>。<code>ToolAdmin </code>则以一种灵活的方式处理该序列。</p>
+<h2 id="默认工具（Idle-Tool）"><a href="#默认工具（Idle-Tool）" class="headerlink" title="默认工具（Idle Tool）"></a>默认工具（Idle Tool）</h2><hr>
+<pre><code>在iTwin.js中   `Idle Tool`是 `Interactive Tool`的一个子类，用于查找启动View工具的输入。
+</code></pre>
+<p>对于iTwin应用来说，有一些默认的工具事件。如果没有激活的工具或者激活的工具没有指定事件，输入事件将转发到默认工具。鼠标事件和触摸手势转换都是默认的工具，如：旋转、平移、缩放、拟合等。<br>如下为默认工具:</p>
+<ul>
+<li>鼠标&#x2F;键盘: LMB鼠标左键、MMB鼠标中键、RMB鼠标右键<ul>
+<li>mmb: 平移</li>
+<li>shift-mmb: 旋转</li>
+<li>wheel: 缩放</li>
+<li>double-mmb: 调整视图</li>
+</ul>
+</li>
+<li>触摸屏:<ul>
+<li>single-finger drag: 旋转</li>
+<li>two-finger drag: 平移</li>
+<li>pinch: 缩放</li>
+<li>double-tap: 调整视图</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/06/14/hello-world/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">Hello World </div>
           
         </div>
-        <a href="/2022/06/14/itwin/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2022/06/14/hello-world/">
-        <h1 class="post-title">
-          Hello World
-        </h1>
       </a>
-      <div class="card-excerpt">
-        
-          Welcome to Hexo! This is your very first post. Check 
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2022-06-14T12:27:27.969Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2022-06-14</span>
-          </time>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 存储结构 </div>
           
         </div>
-        <a href="/2022/06/14/hello-world/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/">
-        <h1 class="post-title">
-          iTwin.js 理论基础 - 基础工具
-        </h1>
+        <i class="iconfont icon-right nav-next-icon"></i>
       </a>
-      <div class="card-excerpt">
-        
-          
-Tools是指用户执行操作的JavaScript类。有两个主要工具...
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-06-25T07:18:19.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-06-25</span>
-          </time>
-          
-        </div>
-        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/">Read Details </a>
-      </div>
-    </article>
-  </div>
+    </div>
+  
+</div>
 
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/">
-        <h1 class="post-title">
-          iTwin.js 理论基础 - 存储结构
-        </h1>
-      </a>
-      <div class="card-excerpt">
-        
-          iModel Overview
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-06-10T13:14:25.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-06-10</span>
-          </time>
-          
-        </div>
-        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/06/03/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/">
-        <h1 class="post-title">
-          iTwin.js 理论基础 - 平台架构
-        </h1>
-      </a>
-      <div class="card-excerpt">
-        
-          
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-06-03T01:37:55.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-06-03</span>
-          </time>
-          
-        </div>
-        <a href="/2021/06/03/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/05/22/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83/">
-        <h1 class="post-title">
-          iTwin.js 理论基础 - 基础环境
-        </h1>
-      </a>
-      <div class="card-excerpt">
-        
-          1.系统版本
-Debian 9 “Stretch” 和Debia...
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-05-22T09:26:14.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-05-22</span>
-          </time>
-          
-        </div>
-        <a href="/2021/05/22/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/05/20/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/">
-        <h1 class="post-title">
-          iTwin.js 理论基础 - 编码规范
-        </h1>
-      </a>
-      <div class="card-excerpt">
-        
-          下文是我们希望所有iTwin.js开发者遵循的TypeScript编码准则。在默认情况下，这些准则是通过我们的TSLint配置文件（tslint.json）执行
-
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-05-20T05:46:25.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-05-20</span>
-          </time>
-          
-        </div>
-        <a href="/2021/05/20/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-  <div class="card">
-    
-    <article class="card card-content">
-      <a href="/2021/05/14/iTwin.js%20Roadmap/">
-        <h1 class="post-title">
-          iTwin.js Roadmap
-        </h1>
-      </a>
-      <div class="card-excerpt">
-        
-          本文概述了iTwin.js平台的开发路径，对功能开发的优先级进行简单说明，它会随着iTwin.js每个版本的更新而更新。
-
-        
-      </div>
-      <div class="card-post-footer">
-        <div class="post-meta">
-          <time datetime="2021-05-14T12:36:05.000Z">
-            <i 
-              class="iconfont icon-calendar" 
-              style="margin-right: 2px;">
-            </i>
-            <span>2021-05-14</span>
-          </time>
-          
-        </div>
-        <a href="/2021/05/14/iTwin.js%20Roadmap/">Read Details </a>
-      </div>
-    </article>
-  </div>
-
-</main>
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B3%E6%97%B6%E5%B7%A5%E5%85%B7%EF%BC%88Immediate-Tools%EF%BC%89"><span class="toc-text">即时工具（Immediate Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%B7%A5%E5%85%B7%EF%BC%88Interactive-Tools%EF%BC%89"><span class="toc-text">交互式工具（Interactive Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">工具调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E7%AE%A1%E7%90%86"><span class="toc-text">工具管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%B7%A5%E5%85%B7%EF%BC%88Idle-Tool%EF%BC%89"><span class="toc-text">默认工具（Idle Tool）</span></a></li></ol>
+</div></main>
             <aside class="left-column">
               
               <div class="card card-author">
@@ -529,6 +461,18 @@ Debian 9 “Stretch” 和Debia...
                <div class="sticky-tablet">
   
   
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B3%E6%97%B6%E5%B7%A5%E5%85%B7%EF%BC%88Immediate-Tools%EF%BC%89"><span class="toc-text">即时工具（Immediate Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%B7%A5%E5%85%B7%EF%BC%88Interactive-Tools%EF%BC%89"><span class="toc-text">交互式工具（Interactive Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">工具调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E7%AE%A1%E7%90%86"><span class="toc-text">工具管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%B7%A5%E5%85%B7%EF%BC%88Idle-Tool%EF%BC%89"><span class="toc-text">默认工具（Idle Tool）</span></a></li></ol>
+      </div>
+    </article>
+  
   
   <article class="card card-content categories-widget">
     <div class="categories-card">
@@ -565,78 +509,21 @@ Debian 9 “Stretch” 和Debia...
   </article>
   
   
-    <article class="card card-content widescreen-archive archive-widget">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">2</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
-  
 </div>
             </aside>
             <aside class="right-column">
               <div class="sticky-widescreen">
   
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B3%E6%97%B6%E5%B7%A5%E5%85%B7%EF%BC%88Immediate-Tools%EF%BC%89"><span class="toc-text">即时工具（Immediate Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%B7%A5%E5%85%B7%EF%BC%88Interactive-Tools%EF%BC%89"><span class="toc-text">交互式工具（Interactive Tools）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">工具调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E7%AE%A1%E7%90%86"><span class="toc-text">工具管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%B7%A5%E5%85%B7%EF%BC%88Idle-Tool%EF%BC%89"><span class="toc-text">默认工具（Idle Tool）</span></a></li></ol>
+    </article>
   
   
   <article class="card card-content">
@@ -673,73 +560,6 @@ Debian 9 “Stretch” 和Debia...
 </div>
   </article>
   
-  
-    <article class="card card-content">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">2</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
   
 </div>
             </aside>
@@ -842,6 +662,36 @@ Debian 9 “Stretch” 和Debia...
 </a> 
      
      
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
      
      
     <script src="/js/main.js"></script> 

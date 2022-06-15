@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+  <title>iTwin.js 理论基础 - 编码规范</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js 理论基础 - 编码规范">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2021/05/20/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2021-05-20">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-06-14">
+      <meta 
+        property="og:article:author" 
+        content="zeming">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - 编码规范
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2021-05-20T05:46:25.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2021-05-20</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>1.6k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>下文是我们希望所有iTwin.js开发者遵循的TypeScript编码准则。在默认情况下，这些准则是通过我们的TSLint配置文件（tslint.json）执行</p>
+<pre class="highlight"><span class="line"><span class="attr">&quot;extends&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./node_modules/@bentley/build-tools/tsconfig-base.json&quot;</span></span><br></pre>
+
+<hr>
+<h3 id="Name"><a href="#Name" class="headerlink" title="Name"></a>Name</h3><hr>
+<ul>
+<li>对类、枚举值使用<a target="_blank" rel="noopener" href="https://blog.csdn.net/thanklife/article/details/103856858">PascalCase</a>（帕斯卡）命名。<code>（eg:&quot;IModelApp&quot;）</code></li>
+<li>对函数、属性和局部变量使用<a target="_blank" rel="noopener" href="https://blog.csdn.net/thanklife/article/details/103856858">camelCase</a>（驼峰）命名。<code>(eg:&quot;getFirstViewDefinitionId&quot;)</code></li>
+<li>不要使用前缀来作为接口名称。<code>（eg:&quot;imjs&quot;）</code></li>
+<li>对私有属性使用前缀。<code>（eg:&quot;_onIModelSelect&quot;）</code></li>
+<li>在命名过程中使用全部单词，尽量少用缩略语。</li>
+</ul>
+<h3 id="File"><a href="#File" class="headerlink" title="File"></a>File</h3><hr>
+<ul>
+<li>TypeScript文件使用.ts作为文件扩展名。</li>
+<li>TypeScript的文件名应该是PascalCase命名。</li>
+</ul>
+<h3 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h3><hr>
+<ul>
+<li>在不需要多个组件共享使用类&#x2F;函数时，不要导出。</li>
+<li>不要在全局命名空间中引入新的类型。</li>
+<li>在一个ts文件中，首先要进行类的定义。</li>
+</ul>
+<h3 id="Do-not-use-null"><a href="#Do-not-use-null" class="headerlink" title="Do not use null"></a>Do not use <code>null</code></h3><hr>
+<ul>
+<li>尽可能不要使用<code>null</code>或者<code>undefined</code>。</li>
+</ul>
+<h3 id="Operators"><a href="#Operators" class="headerlink" title="Operators"></a>Operators</h3><hr>
+<ul>
+<li>尽可能使用<code>===/!==</code>运算符而不是<code>==/!=</code>。</li>
+</ul>
+<h3 id="Strings"><a href="#Strings" class="headerlink" title="Strings"></a>Strings</h3><hr>
+<ul>
+<li>对字符串使用双引号。</li>
+</ul>
+<h3 id="General-Constructs"><a href="#General-Constructs" class="headerlink" title="General Constructs"></a>General Constructs</h3><hr>
+<ul>
+<li>始终使用分号<code>;</code>我们的TSLint规则强制执行这一点，在VSCode中会提示出错，单不影响使用。</li>
+<li>使用 {} 替代 new Object()。</li>
+<li>使用 [] 替代 new Array()。</li>
+</ul>
+<h3 id="Make-judicious-use-of-vertical-screen-space"><a href="#Make-judicious-use-of-vertical-screen-space" class="headerlink" title="Make judicious use of vertical screen space"></a>Make judicious use of vertical screen space</h3><hr>
+<ul>
+<li><p>尽量不要使用多余空行。例如，一个函数的第一行不应该是一个空行。</p>
+</li>
+<li><p>尽量不要把导入语句中的每个导入放在单独的一行。如果你使用Visual Studio Code作为你的编辑器，使用TypeScript Import Sorter扩展的默认设置来自动格式化导入语句。</p>
+</li>
+<li><p>尽量不要使用巧妙的&#x2F;漂亮的多行注释块来分隔代码部分。</p>
+</li>
+<li><p>尽量不要让只有一条函数语句的函数放在同一行。</p>
+<pre class="highlight"><span class="line"><span class="comment">//No</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">middle</span>(): <span class="built_in">number</span> &#123; <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">minimum</span> + ((<span class="variable language_">this</span>.<span class="property">maximum</span> - <span class="variable language_">this</span>.<span class="property">minimum</span>) / <span class="number">2.0</span>); &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Yes</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">middle</span>(): <span class="built_in">number</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">minimum</span> + ((<span class="variable language_">this</span>.<span class="property">maximum</span> - <span class="variable language_">this</span>.<span class="property">minimum</span>) / <span class="number">2.0</span>);</span><br><span class="line">&#125;</span><br></pre>
+</li>
+<li><p>if语句或循环的主体应该在一个单独的行上，即使主体只包含一行代码。</p>
+<pre class="highlight"><span class="line"><span class="comment">// No</span></span><br><span class="line"><span class="keyword">if</span> (meow) <span class="keyword">return</span> <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Yes</span></span><br><span class="line"><span class="keyword">if</span> (meow)</span><br><span class="line"> <span class="keyword">return</span> <span class="string">&quot;cat&quot;</span>;</span><br></pre>
+</li>
+<li><p>结尾的大括号应该是一个空行</p>
+<pre class="highlight"><span class="line"><span class="comment">// No </span></span><br><span class="line"><span class="keyword">if</span> (minimum &gt; maximum) &#123;</span><br><span class="line">  <span class="keyword">const</span> temp = minimum;</span><br><span class="line">  minimum = maximum;</span><br><span class="line">  maximum = temp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> maximum - minimum;</span><br></pre>
+<pre class="highlight"><span class="line"><span class="comment">// Yes</span></span><br><span class="line"><span class="keyword">if</span> (minimum &gt; maximum) &#123;</span><br><span class="line">  <span class="keyword">const</span> temp = minimum;</span><br><span class="line">  minimum = maximum;</span><br><span class="line">  maximum = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> maximum - minimum;</span><br></pre>
+</li>
+<li><p>尽量不要省略单行代码的大括号<code>&#123;&#125;</code></p>
+<pre class="highlight"><span class="line"><span class="comment">// No (closing brace wastes a line) !!!</span></span><br><span class="line"><span class="keyword">if</span> (meow) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;cat&quot;</span>;</span><br><span class="line">&#125;</span><br></pre>
+<pre class="highlight"><span class="line"><span class="comment">// Correct (no braces) !!!</span></span><br><span class="line"><span class="keyword">if</span> (meow)</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;cat&quot;</span>;</span><br></pre></li>
+</ul>
+<h3 id="Style"><a href="#Style" class="headerlink" title="Style"></a>Style</h3><hr>
+<ul>
+<li><p>在匿名函数表达式上使用箭头函数。</p>
+</li>
+<li><p>不要使用<code>var</code>，而是尽可能使用<code>const</code>或<code>let</code>。</p>
+</li>
+<li><p>每个变量语句使用一个声明（eg:<code>let x = 1; let y = 2</code>）。</p>
+</li>
+<li><p><code>&#123;&#125;</code>结构的周围不应有任何空白。<code>,``:``;</code>这些结构体中的运算符后面都有一个空格。</p>
+<pre class="highlight"><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, n = str.<span class="property">length</span>; i &lt; <span class="number">10</span>; ++i) &#123; &#125;</span><br><span class="line"><span class="keyword">if</span> (x &lt; <span class="number">10</span>) &#123; &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="title function_">calculate</span>(<span class="attr">x</span>: <span class="built_in">number</span>, <span class="attr">y</span>: <span class="built_in">string</span>): <span class="built_in">void</span> &#123; . . . &#125;</span><br></pre>
+</li>
+<li><p>每次缩进使用两个空格，不要使用制表符。</p>
+</li>
+<li><p>建议在编辑其中打开tslint。</p>
+</li>
+</ul>
+<h3 id="return"><a href="#return" class="headerlink" title="return"></a>return</h3><hr>
+<ul>
+<li><p>当返回语句有返回值时，不要使用<code>()</code>。</p>
+<pre class="highlight"><span class="line"><span class="keyword">return</span> (<span class="string">&quot;Hello World!&quot;</span>); <span class="comment">// bad</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="string">&quot;Hello World!&quot;</span>; <span class="comment">// good</span></span><br></pre>
+</li>
+<li><p>某些编程流派认为，每个方法都应该只有一个返回语句，iTwin.js建议当你认为没有理由继续执行下去就应该立刻返回。</p>
+<pre class="highlight"><span class="line"><span class="comment">// bad!!</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">getFirstUser</span>(): <span class="title class_">Person</span> | <span class="literal">undefined</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> firstUser?: <span class="title class_">Person</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">hasUsers</span>()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="title function_">usersValidated</span>()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">validateUsers</span>())</span><br><span class="line">        firstUser = <span class="variable language_">this</span>.<span class="title function_">getUser</span>(<span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        firstUser = <span class="variable language_">this</span>.<span class="title function_">getUser</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> firstUser;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ok!!</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">getFirstUser</span>(): <span class="title class_">Person</span> | <span class="literal">undefined</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="title function_">hasUsers</span>())</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="title function_">usersValidated</span>() &amp;&amp; !<span class="variable language_">this</span>.<span class="title function_">validateUsers</span>())</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">getUser</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// best!!! For a simple case like this that is deciding between 2 return values</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">getFirstUser</span>(): <span class="title class_">Person</span> | <span class="literal">undefined</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> userInvalid = !<span class="variable language_">this</span>.<span class="title function_">hasUsers</span>() || (!<span class="variable language_">this</span>.<span class="title function_">usersValidated</span>() &amp;&amp; !<span class="variable language_">this</span>.<span class="title function_">validateUsers</span>());</span><br><span class="line">  <span class="keyword">return</span> userInvalid ? <span class="literal">undefined</span> : <span class="variable language_">this</span>.<span class="title function_">getUser</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre>
+</li>
+<li><p>尽可能明确定义一个返回类型，这也是TypeScript的编程理念。</p>
+<pre class="highlight"><span class="line"><span class="comment">// bad!! No return type specified</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">getOwner</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">isReady</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">widget</span>.<span class="title function_">getOwner</span>(); <span class="comment">// is this a Person???</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Person</span>(name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// good!!</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">getOwner</span>(<span class="attr">name</span>: <span class="built_in">string</span>): <span class="title class_">Person</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">isReady</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">widget</span>.<span class="title function_">getOwner</span>(); <span class="comment">// if this is not a Person, compile error</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Person</span>(name);</span><br><span class="line">&#125;</span><br></pre>
+</li>
+<li><p>当调用方法时，明确指定返回类型。在异步方法调用的情况下，这种做法可以防止省略await关键字。</p>
+<pre class="highlight"><span class="line"><span class="comment">// bad!! no return type specified for async call, and missing await is not caught by the compiler</span></span><br><span class="line"><span class="keyword">const</span> iModels = iModelHub.<span class="title function_">getIModels</span>(projectId);</span><br><span class="line"></span><br><span class="line"><span class="comment">// good!! omitting the await would be caught by the compiler as a type mismatch</span></span><br><span class="line"><span class="keyword">const</span> <span class="attr">iModel</span>: <span class="title class_">IModel</span>[] = <span class="keyword">await</span> iModelHub.<span class="title function_">getIModels</span>(projectId);</span><br></pre></li>
+</ul>
+<h3 id="Getters-and-Setters"><a href="#Getters-and-Setters" class="headerlink" title="Getters and Setters"></a>Getters and Setters</h3><hr>
+<ul>
+<li><p>getter的常见用法是有一个私有成员，该成员在类中是私有读&#x2F;写的，但对公共API是只读的。</p>
+<pre class="highlight"><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="attr">_name</span>: <span class="built_in">string</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">get</span> <span class="title function_">name</span>(): <span class="built_in">string</span> &#123; <span class="keyword">return</span> _name; &#125; <span class="comment">// read-only to public API, so no setter provided</span></span><br><span class="line">&#125;</span><br></pre>
+</li>
+<li><p>如果getter提供的值是在构造函数中建立的，并且永远不会被改变，可以参照下文。</p>
+<pre class="highlight"><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">   <span class="title function_">constructor</span>(<span class="params"><span class="keyword">public</span> <span class="keyword">readonly</span> name: <span class="built_in">string</span></span>) &#123; &#125;</span><br><span class="line">&#125;</span><br></pre>
+</li>
+<li><p>getters和setters的另一个常见用法是，当你想给一个公共成员，但你实际上并不以这种方式存储数据。</p>
+<pre class="highlight"><span class="line"><span class="keyword">class</span> <span class="title class_">PersonName</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span> (<span class="keyword">public</span> <span class="attr">firstName</span>: <span class="built_in">string</span>, <span class="keyword">public</span> <span class="attr">lastName</span>: <span class="built_in">string</span>) &#123; &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">get</span> <span class="title function_">fullName</span>(): <span class="built_in">string</span> &#123; <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">firstName</span> + <span class="string">&quot; &quot;</span> + <span class="variable language_">this</span>.<span class="property">lastName</span>; &#125;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">set</span> <span class="title function_">fullName</span>(<span class="params">name: <span class="built_in">string</span></span>): <span class="built_in">void</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="attr">names</span>: <span class="built_in">string</span>[] = name.<span class="title function_">split</span>(<span class="string">&quot; &quot;</span>);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">firstName</span> = names[<span class="number">0</span>] || <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">lastName</span> = names[<span class="number">1</span>] || <span class="string">&quot;&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></li>
+</ul>
+<h3 id="use-“-”-syntax-vs-“-undefined”"><a href="#use-“-”-syntax-vs-“-undefined”" class="headerlink" title="use “?:” syntax vs. “ | undefined”"></a>use “?:” syntax vs. “ | undefined”</h3><hr>
+<ul>
+<li>当声明成员变量或函数参数时，使用TypeScript的<code>&quot;?: &quot;</code>语法，而不是为可以未定义的变量添加<code>&quot;| undefined&quot;</code>。<pre class="highlight"><span class="line"><span class="keyword">class</span> <span class="title class_">Role</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="attr">name</span>: <span class="built_in">string</span>;</span><br><span class="line">  <span class="keyword">public</span> <span class="attr">description</span>: <span class="built_in">string</span> | <span class="literal">undefined</span>; <span class="comment">// Wrong !!</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Role</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="attr">name</span>: <span class="built_in">string</span>;</span><br><span class="line">  <span class="keyword">public</span> description?: <span class="built_in">string</span>; <span class="comment">// Correct !!</span></span><br><span class="line">&#125;</span><br></pre></li>
+</ul>
+<h3 id="Don’t-repeat-type-names-unnecessarily"><a href="#Don’t-repeat-type-names-unnecessarily" class="headerlink" title="Don’t repeat type names unnecessarily"></a>Don’t repeat type names unnecessarily</h3><hr>
+<ul>
+<li>TypeScript是向JavaScript增强类型的，编译器会自动推断类型，因此没有必要在每个成员或变量的声明中装饰其类型，适当的添加类型。</li>
+<li>如果一个函数超过一行，最好总是包括它的返回类型，以确保没有返回路径有一个意外的类型。<pre class="highlight"><span class="line"><span class="keyword">let</span> <span class="attr">width</span>: <span class="built_in">number</span> = <span class="number">7.3</span>; <span class="comment">// useless type declaration</span></span><br><span class="line"><span class="keyword">public</span> <span class="attr">isReady</span>: <span class="built_in">boolean</span> = <span class="literal">false</span>; <span class="comment">// useless type declaration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">readonly</span> <span class="attr">origin</span>: <span class="title class_">Point3</span>d = <span class="keyword">new</span> <span class="title class_">Point3</span>d(); <span class="comment">// useless type declaration</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> width = <span class="number">7.3</span>; <span class="comment">// correct</span></span><br><span class="line"><span class="keyword">public</span> isReady = <span class="literal">false</span>; <span class="comment">// correct</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">readonly</span> origin = <span class="keyword">new</span> <span class="title class_">Point3</span>d(); <span class="comment">// correct</span></span><br><span class="line"><span class="keyword">const</span> <span class="attr">upVector</span>: <span class="title class_">Vector3</span>d = rMatrix.<span class="title function_">getRow</span>(<span class="number">1</span>); <span class="comment">// good, helps readability. Not strictly necessary.</span></span><br></pre></li>
+</ul>
+<h3 id="Asynchronous-Programming"><a href="#Asynchronous-Programming" class="headerlink" title="Asynchronous Programming"></a>Asynchronous Programming</h3><hr>
+<ul>
+<li>使用<code>Promise</code></li>
+<li>使用<code>return Promise.reject(new MyError())</code>而不是解析为错误状态 。传入 <code>Promise.reject</code> 的对象应该是 <code>Error </code>的子类。</li>
+<li>使用<code>async/await</code>比<code>.then()</code>更好</li>
+</ul>
+<h3 id="Copyright-notice"><a href="#Copyright-notice" class="headerlink" title="Copyright notice"></a>Copyright notice</h3><hr>
+<ul>
+<li>每个.ts文件的第一行<pre class="highlight"><span class="line"><span class="comment">/*---------------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">* Copyright (c) Bentley Systems, Incorporated. All rights reserved.</span></span><br><span class="line"><span class="comment">* See LICENSE.md in the project root for license terms and full copyright notice.</span></span><br><span class="line"><span class="comment">*--------------------------------------------------------------------------------------------*/</span></span><br></pre></li>
+</ul>
+<h3 id="Source-Code-Editor"><a href="#Source-Code-Editor" class="headerlink" title="Source Code Editor"></a>Source Code Editor</h3><hr>
+<ul>
+<li>推荐使用<code>Visual Studio Code</code></li>
+<li>建议为<code>Visual Studio Code</code>配置<code>ESLint</code>扩展，并使用我们的 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@bentley/eslint-plugin">@bentley&#x2F;eslint-plugin</a></li>
+</ul>
+<h3 id="React-Function-Components"><a href="#React-Function-Components" class="headerlink" title="React Function Components"></a>React Function Components</h3><hr>
+<p>有多种方式定义React函数组件：</p>
+<ol>
+<li><code>const Xyz: React.FunctionComponent&lt;XyzProps&gt; = (props) =&gt; &#123;...&#125;</code></li>
+<li><code>const Xyz: React.FC&lt;XyzProps&gt; = (props) =&gt; &#123;...&#125;</code></li>
+<li><code>function Xyz(props: XyzProps) &#123;...&#125;</code><pre class="highlight"><span class="line"><span class="comment">//good</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">Xyz</span>(<span class="params">props: XyzProps</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello World!<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></li>
+</ol>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2021/05/22/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 基础环境 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2021/05/14/iTwin.js%20Roadmap/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js Roadmap </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Name"><span class="toc-text">Name</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#File"><span class="toc-text">File</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type"><span class="toc-text">Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Do-not-use-null"><span class="toc-text">Do not use null</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Operators"><span class="toc-text">Operators</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Strings"><span class="toc-text">Strings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#General-Constructs"><span class="toc-text">General Constructs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Make-judicious-use-of-vertical-screen-space"><span class="toc-text">Make judicious use of vertical screen space</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Style"><span class="toc-text">Style</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#return"><span class="toc-text">return</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Getters-and-Setters"><span class="toc-text">Getters and Setters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#use-%E2%80%9C-%E2%80%9D-syntax-vs-%E2%80%9C-undefined%E2%80%9D"><span class="toc-text">use “?:” syntax vs. “ | undefined”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Don%E2%80%99t-repeat-type-names-unnecessarily"><span class="toc-text">Don’t repeat type names unnecessarily</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asynchronous-Programming"><span class="toc-text">Asynchronous Programming</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Copyright-notice"><span class="toc-text">Copyright notice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code-Editor"><span class="toc-text">Source Code Editor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#React-Function-Components"><span class="toc-text">React Function Components</span></a></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">zeming</p>
+<p class="author-description">designed by theme-kaze</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>1</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Name"><span class="toc-text">Name</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#File"><span class="toc-text">File</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type"><span class="toc-text">Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Do-not-use-null"><span class="toc-text">Do not use null</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Operators"><span class="toc-text">Operators</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Strings"><span class="toc-text">Strings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#General-Constructs"><span class="toc-text">General Constructs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Make-judicious-use-of-vertical-screen-space"><span class="toc-text">Make judicious use of vertical screen space</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Style"><span class="toc-text">Style</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#return"><span class="toc-text">return</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Getters-and-Setters"><span class="toc-text">Getters and Setters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#use-%E2%80%9C-%E2%80%9D-syntax-vs-%E2%80%9C-undefined%E2%80%9D"><span class="toc-text">use “?:” syntax vs. “ | undefined”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Don%E2%80%99t-repeat-type-names-unnecessarily"><span class="toc-text">Don’t repeat type names unnecessarily</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asynchronous-Programming"><span class="toc-text">Asynchronous Programming</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Copyright-notice"><span class="toc-text">Copyright notice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code-Editor"><span class="toc-text">Source Code Editor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#React-Function-Components"><span class="toc-text">React Function Components</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Name"><span class="toc-text">Name</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#File"><span class="toc-text">File</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type"><span class="toc-text">Type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Do-not-use-null"><span class="toc-text">Do not use null</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Operators"><span class="toc-text">Operators</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Strings"><span class="toc-text">Strings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#General-Constructs"><span class="toc-text">General Constructs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Make-judicious-use-of-vertical-screen-space"><span class="toc-text">Make judicious use of vertical screen space</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Style"><span class="toc-text">Style</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#return"><span class="toc-text">return</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Getters-and-Setters"><span class="toc-text">Getters and Setters</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#use-%E2%80%9C-%E2%80%9D-syntax-vs-%E2%80%9C-undefined%E2%80%9D"><span class="toc-text">use “?:” syntax vs. “ | undefined”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Don%E2%80%99t-repeat-type-names-unnecessarily"><span class="toc-text">Don’t repeat type names unnecessarily</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asynchronous-Programming"><span class="toc-text">Asynchronous Programming</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Copyright-notice"><span class="toc-text">Copyright notice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code-Editor"><span class="toc-text">Source Code Editor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#React-Function-Components"><span class="toc-text">React Function Components</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-06-14</div>
+        <a href="/2022/06/14/itwin/"><div class="recent-posts-item-content">itwin</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-06-14</div>
+        <a href="/2022/06/14/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-25</div>
+        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 基础工具</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 存储结构</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>

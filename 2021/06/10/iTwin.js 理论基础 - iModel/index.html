@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
-  <title>Hello World</title>
+  <title>iTwin.js 理论基础 - 存储结构</title>
   
     
       <meta 
         property="og:title" 
-        content="Hello World">
+        content="iTwin.js 理论基础 - 存储结构">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/2022/06/14/hello-world/index.html">
+        content="http://example.com/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/index.html">
     
     
       <meta 
@@ -42,7 +42,7 @@
         content="article">
       <meta 
         property="og:article:published_time" 
-        content="2022-06-14">
+        content="2021-06-10">
       <meta 
         property="og:article:modified_time" 
         content="2022-06-14">
@@ -50,6 +50,10 @@
         property="og:article:author" 
         content="zeming">
       
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
         
       
     
@@ -252,41 +256,63 @@
 <article class="card card-content">
   <header>
     <h1 class="post-title">
-      Hello World
+      iTwin.js 理论基础 - 存储结构
     </h1>
   </header>
   <div class="post-meta post-show-meta">
-    <time datetime="2022-06-14T12:27:27.969Z">
+    <time datetime="2021-06-10T13:14:25.000Z">
       <i 
         class="iconfont icon-calendar" 
         style="margin-right: 2px;">
       </i>
-      <span>2022-06-14</span>
+      <span>2021-06-10</span>
     </time>
     
     
       <span class="dot"></span>
-      <span>75 words</span>
+      <span>715 words</span>
     
   </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
   
   </header>
   <div 
     id="section" 
     class="post-content">
-    <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="highlight"><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="highlight"><span class="line">$ hexo server</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="highlight"><span class="line">$ hexo generate</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="highlight"><span class="line">$ hexo deploy</span><br></pre>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+    <h1 id="iModel-Overview"><a href="#iModel-Overview" class="headerlink" title="iModel Overview"></a>iModel Overview</h1><hr>
+<p>iModel是一个基于SQLite的分布式关系数据库，其模式由BIS定义。iModel包含了有关单个基础架构资产的全部信息，例如物理和功能模型，图纸，规格，分析模型等。<br>一个iModel可能拥有多个副本，每个副本都保存在<code>briefcaseDb </code>中，并通过iModelHub的ChangeSet同步，就像Git和GitHub的关系一样。使用iModels，每个用户都有数据库的完整副本。</p>
+<h2 id="Every-iModel-has-a-GUID"><a href="#Every-iModel-has-a-GUID" class="headerlink" title="Every iModel has a GUID"></a>Every iModel has a GUID</h2><hr>
+<p>iModel 保存单个基础架构资产的相关信息。它们都用一个唯一标识符进行唯一标识，因此iModelHub可以跟踪和保护它们。每个<code>Briefcase </code>都维护其 iModel 的 GUID，因此其所有者可以控制对它的访问。</p>
+<h2 id="An-iModel-occupies-physical-space-on-the-earth"><a href="#An-iModel-occupies-physical-space-on-the-earth" class="headerlink" title="An iModel occupies physical space on the earth"></a>An iModel occupies physical space on the earth</h2><hr>
+<p>每个 iModel 都有一个空间坐标系，可以定位到地球上的任何地方。通过这种方式，多个iModel可以相对于彼此以及相对于外部实景模型，地图和地理信息系统等进行定位。<br>iModels 有一个名为”项目范围”（Project Extents）的属性，用于描述它们的作用域，iModel 的空间坐标系中的所有几何图形都必须包含在内。</p>
+<h2 id="The-format-of-information-in-an-iModel-is-defined-by-BIS"><a href="#The-format-of-information-in-an-iModel-is-defined-by-BIS" class="headerlink" title="The format of information in an iModel is defined by BIS"></a>The format of information in an iModel is defined by BIS</h2><hr>
+<p>iModel中的信息格式是由BIS定义的。基础架构模式是一系列特定领域的类定义，定义了iModel中实体的属性和关系。</p>
+<h2 id="An-iModel-is-comprised-of-many-Models"><a href="#An-iModel-is-comprised-of-many-Models" class="headerlink" title="An iModel is comprised of many Models"></a>An iModel is comprised of many Models</h2><hr>
+<p>在一个iModel 中，信息的逻辑分区是由模型定义的。有许多类型的模型，与它们所持有的信息类型是相对应的（例如空间，功能，绘图等）。在同一 iModel 中，每种类型的模型可以有多个实例，即一个iModel是由许多模型组成。</p>
+<h2 id="A-Model-is-comprised-of-many-Elements"><a href="#A-Model-is-comprised-of-many-Elements" class="headerlink" title="A Model is comprised of many Elements"></a>A Model is comprised of many Elements</h2><hr>
+<p>元素是 BIS 中最小的可独立寻址构建块。每个元素都由一个且仅一个模型拥有。一个模型是由许多元素组成的<br>元素的类型很多，与它们所包含的信息类型相对应。只有几何模型中保存的几何元素在视图中可见。</p>
+<h2 id="iTwin-js-makes-iModels-accessible-anywhere"><a href="#iTwin-js-makes-iModels-accessible-anywhere" class="headerlink" title="iTwin.js makes iModels accessible anywhere"></a>iTwin.js makes iModels accessible anywhere</h2><hr>
+<p>iTwin.js库的目的是使iModels可供所有人随时随地访问，用于iModel拥有者的任何操作。它提供了创建、修改、查询、显示和分析 iModel 的方法。</p>
+<h2 id="ECSQL-is-the-query-language-of-iModels"><a href="#ECSQL-is-the-query-language-of-iModels" class="headerlink" title="ECSQL is the query language of iModels"></a>ECSQL is the query language of iModels</h2><hr>
+<p>iModel是一个SQLite数据库。SQLite对SQL有广泛的支持，包括索引和全面的查询规划。但是，由于BIS类到数据库表的映射，直接将SQL与iModels一起使用并不简单。因此，iTwin.js包含 ECSQL，以在类和属性名称（而不是表和列名称）方面形成 iModel 的查询。在内部，ECSQL被转换为SQL并传递给SQLite以实现出色的性能。</p>
 
   </div>
   <div>
@@ -297,13 +323,13 @@
   
     <div class="nav-item-prev">
       <a 
-        href="/2022/06/14/itwin/" 
+        href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
           
-            <div class="nav-title">itwin </div>
+            <div class="nav-title">iTwin.js 理论基础 - 基础工具 </div>
           
         </div>
       </a>
@@ -312,12 +338,12 @@
   
     <div class="nav-item-next">
       <a 
-        href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/" 
+        href="/2021/06/03/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/" 
         class="nav-link">
         <div>
           <div class="nav-label">Next</div>
           
-            <div class="nav-title">iTwin.js 理论基础 - 基础工具 </div>
+            <div class="nav-title">iTwin.js 理论基础 - 平台架构 </div>
           
         </div>
         <i class="iconfont icon-right nav-next-icon"></i>
@@ -335,7 +361,7 @@
     style="padding-right: 2px;">
   </i>Catalogue
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-Overview"><span class="toc-text">iModel Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Every-iModel-has-a-GUID"><span class="toc-text">Every iModel has a GUID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-occupies-physical-space-on-the-earth"><span class="toc-text">An iModel occupies physical space on the earth</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-format-of-information-in-an-iModel-is-defined-by-BIS"><span class="toc-text">The format of information in an iModel is defined by BIS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-is-comprised-of-many-Models"><span class="toc-text">An iModel is comprised of many Models</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Model-is-comprised-of-many-Elements"><span class="toc-text">A Model is comprised of many Elements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iTwin-js-makes-iModels-accessible-anywhere"><span class="toc-text">iTwin.js makes iModels accessible anywhere</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ECSQL-is-the-query-language-of-iModels"><span class="toc-text">ECSQL is the query language of iModels</span></a></li></ol></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -405,7 +431,7 @@
     style="padding-right: 2px;">
   </i>Catalogue
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-Overview"><span class="toc-text">iModel Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Every-iModel-has-a-GUID"><span class="toc-text">Every iModel has a GUID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-occupies-physical-space-on-the-earth"><span class="toc-text">An iModel occupies physical space on the earth</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-format-of-information-in-an-iModel-is-defined-by-BIS"><span class="toc-text">The format of information in an iModel is defined by BIS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-is-comprised-of-many-Models"><span class="toc-text">An iModel is comprised of many Models</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Model-is-comprised-of-many-Elements"><span class="toc-text">A Model is comprised of many Elements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iTwin-js-makes-iModels-accessible-anywhere"><span class="toc-text">iTwin.js makes iModels accessible anywhere</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ECSQL-is-the-query-language-of-iModels"><span class="toc-text">ECSQL is the query language of iModels</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -458,7 +484,7 @@
     style="padding-right: 2px;">
   </i>Catalogue
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-Overview"><span class="toc-text">iModel Overview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Every-iModel-has-a-GUID"><span class="toc-text">Every iModel has a GUID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-occupies-physical-space-on-the-earth"><span class="toc-text">An iModel occupies physical space on the earth</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-format-of-information-in-an-iModel-is-defined-by-BIS"><span class="toc-text">The format of information in an iModel is defined by BIS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-iModel-is-comprised-of-many-Models"><span class="toc-text">An iModel is comprised of many Models</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Model-is-comprised-of-many-Elements"><span class="toc-text">A Model is comprised of many Elements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iTwin-js-makes-iModels-accessible-anywhere"><span class="toc-text">iTwin.js makes iModels accessible anywhere</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ECSQL-is-the-query-language-of-iModels"><span class="toc-text">ECSQL is the query language of iModels</span></a></li></ol></li></ol>
     </article>
   
   

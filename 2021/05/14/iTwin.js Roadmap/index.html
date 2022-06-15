@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+  <title>iTwin.js Roadmap</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js Roadmap">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2021/05/14/iTwin.js%20Roadmap/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2021-05-14">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-06-14">
+      <meta 
+        property="og:article:author" 
+        content="zeming">
+      
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js Roadmap
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2021-05-14T12:36:05.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2021-05-14</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>1.5k words</span>
+    
+  </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>本文概述了iTwin.js平台的开发路径，对功能开发的优先级进行简单说明，它会随着iTwin.js每个版本的更新而更新。<br><a name="Xc554"></a></p>
+<h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><hr>
+<p>我们将使用以下主题（更具实际的需求不断改变）来推动iTwin.js的发展：</p>
+<ul>
+<li>作为基础设施数字孪生的开放平台，将 BIM 模型、GIS 数据、实景数据、IT 和 OT 联合在一起，实现无缝的用户体验。</li>
+<li>分离对云供应商、操作系统和浏览器之间的依赖。</li>
+<li>高性能、易扩展性、安全性和稳定性是iTwin.js的核心。</li>
+<li>让使用 iTwin.js 进行开发尽可能简单、高效。</li>
+<li>尽可能遵守开源标准和规范。</li>
+<li>构建一个创新和企业的生态系统。<br><a name="icCL0"></a></li>
+</ul>
+<h2 id="路线图"><a href="#路线图" class="headerlink" title="路线图"></a>路线图</h2><hr>
+<p>选中的框表示在最新版本中完成的功能。如果未选中的框，则表示该功能的工作正在进行中或暂定于将来发布。本文档的各个部分功能的会随时间的推移而变化，项目通常按优先级排序（注意：优先级顺序并不一定代表完成顺序，因为优先级较低但简单的功能可能会很快完成）。如果某个项目的优先级低于您的预期，则可以通过提交 PR 来提出自己的意见和建议。点击此连接提交<a target="_blank" rel="noopener" href="https://github.com/iTwin/itwinjs-core/discussions">PR</a>。<br><a name="OwuD0"></a></p>
+<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><hr>
+<ul>
+<li>√支持硬件抗锯齿</li>
+<li>√点云和地形的主题显示</li>
+<li>×支持压缩的纹理格式</li>
+<li>√粒子效果</li>
+<li>√屏幕空间效果</li>
+<li>×大型场景动画（例如，行人模拟、天气动画、灾难模拟）</li>
+<li>×支持大气层渲染效果</li>
+</ul>
+<br /> 
+<a name="HdDJA"></a>
+### 拓展
+
+<hr>
+<ul>
+<li>×支持与UI技术无关的”内置”和运行时扩展（即不依赖于React，Angular，Vue.js等）</li>
+<li>×支持添加工具和最小的 UI 功能</li>
+<li>×创建用于构建扩展的示例和模板</li>
+<li>×创建快速简便的支持，以便在扩展的托管应用程序中进行创建 - 例如，iTwin Viewer<br><a name="ULAcV"></a></li>
+</ul>
+<h3 id="地理信息系统显示"><a href="#地理信息系统显示" class="headerlink" title="地理信息系统显示"></a>地理信息系统显示</h3><hr>
+<ul>
+<li>√扩展基础地图的支持（AzureMaps、MapBox等），基础地图的透明度可以独立于图层来控制。</li>
+<li>√添加对显示连接到实时 WMS、WMTS、AzureMaps、MapBox 或 ArcGIS REST API 服务器的栅格地图图层的支持。可以独立控制地图图层的可见性和透明度。图层可以作为背景附加到 BIM 几何图形下方，也可以作为叠加层附加到 BIM 几何图形上方。<br><a name="H7WCB"></a></li>
+</ul>
+<h3 id="微软集成"><a href="#微软集成" class="headerlink" title="微软集成"></a>微软集成</h3><hr>
+<ul>
+<li>×提供用于直接在 Microsoft Teams 中托管 iTwin.js 应用程序的 API。<br><a name="ft2sT"></a></li>
+</ul>
+<h3 id="ET-x2F-IT-x2F-OT-集成"><a href="#ET-x2F-IT-x2F-OT-集成" class="headerlink" title="ET&#x2F;IT&#x2F;OT 集成"></a>ET&#x2F;IT&#x2F;OT 集成</h3><hr>
+<ul>
+<li>×为iModels中的工程项目、企业系统和实时物联网传感器、相机、控制器、设备和处理器之间的接口提供工作实例和模板。</li>
+<li>×创建用于增强与具有 IOT 链接元素的工程设计工具的连接器同步的数据的工具。</li>
+<li>×增强常见物联网模式和查询引擎的BIS模式。<br><a name="eQWvq"></a></li>
+</ul>
+<h3 id="代理部署"><a href="#代理部署" class="headerlink" title="代理部署"></a>代理部署</h3><hr>
+<ul>
+<li>×提供通过 Kubernetes 部署的代理的工作示例和模板。</li>
+<li>×对 iModel 执行由 iModelHub 中的相关事件触发的 iModel 操作。<br><a name="jbfZK"></a></li>
+</ul>
+<h3 id="iTwin-Viewer"><a href="#iTwin-Viewer" class="headerlink" title="iTwin Viewer"></a>iTwin Viewer</h3><hr>
+<ul>
+<li>√创建功能齐全的 iTwin Web 查看应用程序平台，可部署在任何云基础架构上。</li>
+<li>×提供必要的基础结构，以便在任何基于 iTwin Viewer的解决方案中托管扩展。<br><a name="kPuvz"></a></li>
+</ul>
+<h3 id="点云数据"><a href="#点云数据" class="headerlink" title="点云数据"></a>点云数据</h3><hr>
+<ul>
+<li>×支持大规模点云基于时间的差异可视化。<br><a name="hnp2x"></a></li>
+</ul>
+<h3 id="实景数据"><a href="#实景数据" class="headerlink" title="实景数据"></a>实景数据</h3><hr>
+<ul>
+<li>√支持为大型实景数据实施网格化提供线性转换。<br><a name="gi2TE"></a></li>
+</ul>
+<h3 id="地理照片和全景图"><a href="#地理照片和全景图" class="headerlink" title="地理照片和全景图"></a>地理照片和全景图</h3><hr>
+<ul>
+<li>×改进服务器端对照片和全景图标签的提取。</li>
+<li>×将地质照片包纳入可从任何iTwin浏览器应用程序加载的扩展程序。<br><a name="m6hKh"></a></li>
+</ul>
+<h3 id="地理定位（普通）"><a href="#地理定位（普通）" class="headerlink" title="地理定位（普通）"></a>地理定位（普通）</h3><hr>
+<ul>
+<li>√提供一种方法来访问 iModel 和垂直的地理位置 gcs 定义。</li>
+<li>×根据 orbit gt 实现实现前端重新投影。</li>
+<li>×实现新的地理坐标服务的客户端。</li>
+<li>×从新的地理坐标服务客户端获取大地水准面分离。</li>
+<li>×在 iTwin 工作区支持中完成系统网格文件。<br><a name="Er0qL"></a></li>
+</ul>
+<h3 id="iModel-Transformations"><a href="#iModel-Transformations" class="headerlink" title="iModel Transformations"></a>iModel Transformations</h3><hr>
+<ul>
+<li>√创建示例和模板，说明 iModel 到 iModel 转换和同步的用法。<br><a name="C0UXn"></a></li>
+</ul>
+<h3 id="iTwin-js-连接器框架"><a href="#iTwin-js-连接器框架" class="headerlink" title="iTwin.js 连接器框架"></a>iTwin.js 连接器框架</h3><hr>
+<ul>
+<li>√支持使用 iTwin.js 后端创建多进程连接器。一个进程与源应用程序 API 链接以读取源应用程序文件。然后，它通过IPC与另一个iTwin.js进程进行通信，以更新iModel。<br><a name="ktqvQ"></a></li>
+</ul>
+<h3 id="iModel-编辑应用程序"><a href="#iModel-编辑应用程序" class="headerlink" title="iModel 编辑应用程序"></a>iModel 编辑应用程序</h3><hr>
+<ul>
+<li>√支持通过 Electron 在桌面上进行交互式 iModel 创建、编辑和扩充。<br><a name="ilQzw"></a></li>
+</ul>
+<h3 id="移动设备支持"><a href="#移动设备支持" class="headerlink" title="移动设备支持"></a>移动设备支持</h3><hr>
+<ul>
+<li>×最大限度地降低移动浏览器的内存、功耗和带宽要求。</li>
+<li>√提高触摸和小屏幕外形的可用性。</li>
+<li>×支持完全离线和偶尔连接的平板电脑和手机（iOS和Android）。<br><a name="dpPkD"></a></li>
+</ul>
+<h3 id="非图形数据显示"><a href="#非图形数据显示" class="headerlink" title="非图形数据显示"></a>非图形数据显示</h3><hr>
+<ul>
+<li>√通过支持的ECSchema版本过滤演示规则和规则集。</li>
+<li>√在以下情况下，自动更新所有规则驱动的组件中的数据：<ul>
+<li>√源iModel数据的更改</li>
+<li>√演示文稿规则更改</li>
+<li>√表示规则集变量更改<br><a name="FeM7x"></a></li>
+</ul>
+</li>
+</ul>
+<h4 id="属性相关显示"><a href="#属性相关显示" class="headerlink" title="属性相关显示"></a>属性相关显示</h4><hr>
+<ul>
+<li>√嵌套属性分组。</li>
+<li>√选择目标元素的可单击导航属性。</li>
+<li>×更好地支持复合属性（数组、结构、点）。</li>
+<li>×支持关系属性。</li>
+<li>×支持临时属性。<br><a name="qkT31"></a></li>
+</ul>
+<h3 id="用户界面"><a href="#用户界面" class="headerlink" title="用户界面"></a>用户界面</h3><hr>
+<ul>
+<li>√扩展基于面板的 AppUi 的功能。</li>
+<li>×改善移动设备上的触摸支持和用户体验。</li>
+<li>√桌面 Electron 应用程序的多窗口支持。</li>
+<li>×增强辅助功能和键盘导航。</li>
+<li>×增强 UiItemProvider 以支持：<ul>
+<li>×更多文字编辑器，尤其是读&#x2F;写工作流所需的文字编辑器</li>
+<li>×异步列表填充</li>
+</ul>
+</li>
+<li>√提供 API 以允许应用、扩展和程序包向”设置”阶段提供设置。<br><a name="A8cHU"></a></li>
+</ul>
+<h3 id="与外部系统的接口"><a href="#与外部系统的接口" class="headerlink" title="与外部系统的接口"></a>与外部系统的接口</h3><hr>
+<ul>
+<li>√为建立其他文件格式（如glTF、OBJ、USD）的导出器提供基础功能。</li>
+<li>√展开图形提取的筛选和质量控制选项。<br><a name="dYjBc"></a></li>
+</ul>
+<h3 id="开发人员体验"><a href="#开发人员体验" class="headerlink" title="开发人员体验"></a>开发人员体验</h3><hr>
+<ul>
+<li>√将 iTwin.js和相关存储库迁移到 GitHub。</li>
+</ul>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2021/05/20/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 编码规范 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98"><span class="toc-text">主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%BA%BF%E5%9B%BE"><span class="toc-text">路线图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">可视化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA"><span class="toc-text">地理信息系统显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E8%BD%AF%E9%9B%86%E6%88%90"><span class="toc-text">微软集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ET-x2F-IT-x2F-OT-%E9%9B%86%E6%88%90"><span class="toc-text">ET&#x2F;IT&#x2F;OT 集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E9%83%A8%E7%BD%B2"><span class="toc-text">代理部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-Viewer"><span class="toc-text">iTwin Viewer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE"><span class="toc-text">点云数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%99%AF%E6%95%B0%E6%8D%AE"><span class="toc-text">实景数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E7%85%A7%E7%89%87%E5%92%8C%E5%85%A8%E6%99%AF%E5%9B%BE"><span class="toc-text">地理照片和全景图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D%EF%BC%88%E6%99%AE%E9%80%9A%EF%BC%89"><span class="toc-text">地理定位（普通）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-Transformations"><span class="toc-text">iModel Transformations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-js-%E8%BF%9E%E6%8E%A5%E5%99%A8%E6%A1%86%E6%9E%B6"><span class="toc-text">iTwin.js 连接器框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-%E7%BC%96%E8%BE%91%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="toc-text">iModel 编辑应用程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E8%AE%BE%E5%A4%87%E6%94%AF%E6%8C%81"><span class="toc-text">移动设备支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%98%BE%E7%A4%BA"><span class="toc-text">非图形数据显示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E7%9B%B8%E5%85%B3%E6%98%BE%E7%A4%BA"><span class="toc-text">属性相关显示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="toc-text">用户界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%A4%96%E9%83%A8%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">与外部系统的接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E4%BD%93%E9%AA%8C"><span class="toc-text">开发人员体验</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">zeming</p>
+<p class="author-description">designed by theme-kaze</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>1</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98"><span class="toc-text">主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%BA%BF%E5%9B%BE"><span class="toc-text">路线图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">可视化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA"><span class="toc-text">地理信息系统显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E8%BD%AF%E9%9B%86%E6%88%90"><span class="toc-text">微软集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ET-x2F-IT-x2F-OT-%E9%9B%86%E6%88%90"><span class="toc-text">ET&#x2F;IT&#x2F;OT 集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E9%83%A8%E7%BD%B2"><span class="toc-text">代理部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-Viewer"><span class="toc-text">iTwin Viewer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE"><span class="toc-text">点云数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%99%AF%E6%95%B0%E6%8D%AE"><span class="toc-text">实景数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E7%85%A7%E7%89%87%E5%92%8C%E5%85%A8%E6%99%AF%E5%9B%BE"><span class="toc-text">地理照片和全景图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D%EF%BC%88%E6%99%AE%E9%80%9A%EF%BC%89"><span class="toc-text">地理定位（普通）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-Transformations"><span class="toc-text">iModel Transformations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-js-%E8%BF%9E%E6%8E%A5%E5%99%A8%E6%A1%86%E6%9E%B6"><span class="toc-text">iTwin.js 连接器框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-%E7%BC%96%E8%BE%91%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="toc-text">iModel 编辑应用程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E8%AE%BE%E5%A4%87%E6%94%AF%E6%8C%81"><span class="toc-text">移动设备支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%98%BE%E7%A4%BA"><span class="toc-text">非图形数据显示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E7%9B%B8%E5%85%B3%E6%98%BE%E7%A4%BA"><span class="toc-text">属性相关显示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="toc-text">用户界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%A4%96%E9%83%A8%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">与外部系统的接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E4%BD%93%E9%AA%8C"><span class="toc-text">开发人员体验</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98"><span class="toc-text">主题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E7%BA%BF%E5%9B%BE"><span class="toc-text">路线图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">可视化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA"><span class="toc-text">地理信息系统显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E8%BD%AF%E9%9B%86%E6%88%90"><span class="toc-text">微软集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ET-x2F-IT-x2F-OT-%E9%9B%86%E6%88%90"><span class="toc-text">ET&#x2F;IT&#x2F;OT 集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E9%83%A8%E7%BD%B2"><span class="toc-text">代理部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-Viewer"><span class="toc-text">iTwin Viewer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE"><span class="toc-text">点云数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%99%AF%E6%95%B0%E6%8D%AE"><span class="toc-text">实景数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E7%85%A7%E7%89%87%E5%92%8C%E5%85%A8%E6%99%AF%E5%9B%BE"><span class="toc-text">地理照片和全景图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D%EF%BC%88%E6%99%AE%E9%80%9A%EF%BC%89"><span class="toc-text">地理定位（普通）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-Transformations"><span class="toc-text">iModel Transformations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iTwin-js-%E8%BF%9E%E6%8E%A5%E5%99%A8%E6%A1%86%E6%9E%B6"><span class="toc-text">iTwin.js 连接器框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iModel-%E7%BC%96%E8%BE%91%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"><span class="toc-text">iModel 编辑应用程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E8%AE%BE%E5%A4%87%E6%94%AF%E6%8C%81"><span class="toc-text">移动设备支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E6%98%BE%E7%A4%BA"><span class="toc-text">非图形数据显示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E7%9B%B8%E5%85%B3%E6%98%BE%E7%A4%BA"><span class="toc-text">属性相关显示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="toc-text">用户界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%A4%96%E9%83%A8%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">与外部系统的接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E4%BD%93%E9%AA%8C"><span class="toc-text">开发人员体验</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-06-14</div>
+        <a href="/2022/06/14/itwin/"><div class="recent-posts-item-content">itwin</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-06-14</div>
+        <a href="/2022/06/14/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-25</div>
+        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 基础工具</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 存储结构</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>
