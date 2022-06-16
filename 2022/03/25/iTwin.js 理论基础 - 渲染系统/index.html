@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+  <title>iTwin.js 理论基础 - 渲染系统</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js 理论基础 - 渲染系统">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-03-25">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-06-16">
+      <meta 
+        property="og:article:author" 
+        content="zeming">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - 渲染系统
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-03-25T10:29:13.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-03-25</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>6k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>iTwin.js可以实现iModels、实景模型、IoT传感器数据、地图图像和其他数据源的数据加载和渲染，以实现iTwin内容的可视化。iTwin.js渲染系统还支持直接加载装饰器和Tile。<br>渲染系统分为两个部分：</p>
+<ul>
+<li>前端运行WebGL的Tile渲染器，负责显示视口的内容；</li>
+<li>后端运行本地Tile生成器，负责根据iModel的内容生成相应的Tile；</li>
+</ul>
+<p>在前端和后端之间可以引入一个缓存层，以提供先前生成的Tile；或者后端可以维护自己的内部缓存。本文档主要关注显示系统的前端部分；后端Tile生成器的文档只限于iModel Tile格式的概述。<br><a name="NANys"></a></p>
+<h1 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h1><p>iTwin.js渲染主要分为两部分：</p>
+<ul>
+<li><code>TileAdmin</code>协调<code>Tiles</code>的请求并管理其生存周期以限制内存消耗。</li>
+<li>渲染系统通过 WebGL 与图形硬件进行通信，以分配 <code>RenderGraphics </code>和 <code>RenderTextures </code>等资源，并将视口的内容绘制到屏幕上。<br><a name="K9oT0"></a></li>
+</ul>
+<h1 id="WebGL"><a href="#WebGL" class="headerlink" title="WebGL"></a>WebGL</h1><p>由于网页的渲染在浏览器环境中运行，因此它在后台使用 WebGL与图形硬件进行通信。然而，WebGL 不会公开供应用程序使用的相关内容。相反，像<code>GraphicBuilder</code>和<code>RenderSystem</code>这样的抽象类提供了更高级的API，用于间接使用WebGL资源。<br>渲染器支持任意数量的视口，所有视口共享单个 WebGL 环境，以减少着色器、纹理和磁贴等资源的重复。视口可以相对彼此自由定位，有无重叠皆可。<br>渲染器将尝试使用 WebGL 2，它提供了比 WebGL 1 更多的功能和更好的性能;但在缺乏对 WebGL 2 支持的设备上将回退到 WebGL 1。在撰写本文时，Safari浏览器终获得了对WebGL 2（在macOS Monterey和iOS 15中）的官方支持，这使得WebGL 2的支持更加普及。尽管如此，渲染器的某些高级功能在某些设备上可能不受支持。请查阅<a target="_blank" rel="noopener" href="https://connect-imodeljscompatibility.bentley.com/">兼容性检查器</a>，以确定您的设备上可能不可用的功能。<br>支持主流的浏览器，包括Firefox，Safari和基于Chrome的浏览器（Chrome，Electron，Brave，Edge等）。在基于Chrome的浏览器中观察到最佳图形性能。不支持 Internet Explorer 和”旧”Edge。<br><a name="z7fTV"></a></p>
+<h1 id="Alternatives"><a href="#Alternatives" class="headerlink" title="Alternatives"></a>Alternatives</h1><p>WebGL 仅公开了现代图形硬件的一小部分功能。通过使用 iTwin for Unreal 或 Unity 导出器，分别导出网格以供Unreal 和 Unity 使用，可以生成更多逼真的 iModel 可视化效果。</p>
+<p><a name="zAnx1"></a></p>
+<h1 id="Tile-based-rendering"><a href="#Tile-based-rendering" class="headerlink" title="Tile-based rendering"></a>Tile-based rendering</h1><p>iTwin.js渲染系统负责在网络浏览器的限制下，将来自各种不同来源的大量数据可视化。它主要是通过使用Tiles来实现的–一种将大型模型的几何结构划分为一个层次的子卷的机制，每个子卷代表模型几何结构中某一特定细节的一部分。其结果是一个<code>TileTree</code>，可以有效地查询所需的Tile集，以渲染与用户当前所看的空间体积相对应的模型部分，其细节水平适合于当前的观察Frustum和视口分辨率。<br>iTwin.js渲染系统可以广泛的加载来源汇集不同类型的数据：</p>
+<ul>
+<li>iModels，由iTwin.js后端产生的Tile格式</li>
+<li>标准三维Tile格式的实景网格和点云，例如由Bentley ContextCapture生成的格式；</li>
+<li>OrbitGT格式的点云；</li>
+<li>来自各种来源的地图图像，包括Bing和MapBox；</li>
+<li>来自Cesium ION的世界范围的三维地形网格；</li>
+<li>由OpenStreetMap提供的世界范围的建筑网格；</li>
+<li>由应用程序通过TiledGraphicsProviders提供的任何格式的三维Tile；</li>
+</ul>
+<p>Cesium的3d tiles标准对一般概念做了很好的概述，同时还提供了一些针对标准3d tiles格式的细节。由iTwin.js后端产生的Tile使用iModelTile格式，它在许多方面与其他格式不同。<br><a name="Xnhn0"></a></p>
+<h2 id="Scene-creation"><a href="#Scene-creation" class="headerlink" title="Scene creation"></a>Scene creation</h2><hr>
+<p>一个空间视图（spatial view）可以聚集任何数量的空间模型，如其<code>ModelSelector</code>所指定。每个模型都与一个<code>TileTree</code>关联，<code>TileTree</code>为该模型提供图形。下面的GIF动画说明了一个办公楼的空间视图如何由四个独立的模型组成：一个提供管道系统，另一个提供结构元素，第三个提供建筑组件，最后是景观。<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/scene.gif" alt="office-models.gif" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/scene.gif" class="lozad post-image"><br>视图也可以包含与现实模型、地图、地形或自定义提供者相关的Tile树。组建场景需要遍历每个Tile树，选择最适合显示的Tile，可能还要排队请求加载更多合适的Tile，最后将Tile渲染到屏幕上。<br>这个过程主要由<code>TileTreeReference.addToScene</code>实现。虽然<code>TileTreeReference</code>的不同实现之间的细节会有所不同，但它通常看起来像下面这样，从根Tile开始。</p>
+<ol>
+<li>当该Tile与所查看的体积和应用于视图或模型的任何剪辑体积相交，且该Tile对当前视图来说具有合适的细节水平，首先对该Tile图形进行加载，然后选择该Tile进行显示。</li>
+<li>当该Tile的直系子类图形被加载，选择该子类Tile进行显示。</li>
+<li>当该Tile的直系父类图形被加载，选择该父类Tile进行显示。</li>
+</ol>
+<p>所有被选中显示的Tile的图形都被添加到场景图中。然后，渲染器将图形解构为一个有序的渲染命令序列，并将其组织成几个渲染通道。例如，不透明的几何图形在一个通道中被绘制，而透明的几何图形在随后的通道中被绘制。最后，这些命令被提交给GPU，而新的图像被混合到屏幕上。<br><a name="Wr5x5"></a></p>
+<h2 id="Tile-loading"><a href="#Tile-loading" class="headerlink" title="Tile loading"></a>Tile loading</h2><p>Tile通常在没有图形的情况下无法感知的–它的图形只有在场景创建过程中被选择显示时才会被加载。<code>TileAdmin</code>维护一个Tile内容请求队列。在任何时候，最多可以有N个内容请求；其余的在一个优先级队列中。准确的最大值取决于应用程序的配置；对于Web应用程序，它默认为10，以考虑到HTTP&#x2F;1.1的限制；对于桌面和移动应用程序，它是基于客户端设备的硬件并发性。待处理的请求会在取消时从队列中移除–例如，如果观察范围发生变化，使得Tile的图形不再需要在任何视口中显示。<br><a name="HjaYm"></a></p>
+<h2 id="Resource-management"><a href="#Resource-management" class="headerlink" title="Resource management"></a>Resource management</h2><p>Tile图形消耗图形内存，而Tile本身则消耗JavaScript堆内存。Tile在未使用一段时间后会被常规地丢弃，同时丢弃的还有它们的WebGL资源和所有的子孙。整个Tile树在废弃一段时间后（通常是更长时间）也会被丢弃。<br>每个Tile都会跟踪它从WebGL中请求的内存总量。<code>TileAdmin.gpuMemoryLimit</code>可以被配置为对所消耗的图形内存量进行限制；如果Tile所消耗的内存总量超过该限制，那么最近使用最少的Tile的图形将被丢弃，直到满足该限制。Tile本身不会被丢弃；当前在任何视口中被选中显示的任何Tile的图形也不会被丢弃。这个限制需要仔细平衡：限制太低可能会导致对同一Tile内容的过度重复请求，而限制太高则有可能超出客户端的可用图形内存，通常会导致背景内容丢失。<br><a name="Fnu7E"></a></p>
+<h1 id="Lighting-materials-and-environment"><a href="#Lighting-materials-and-environment" class="headerlink" title="Lighting, materials, and environment"></a>Lighting, materials, and environment</h1><p>iTwin.js渲染机制是为在一个受限的浏览器环境中可视化大型基础设施数字孪生设计的。逼真的渲染并不是该设计的一部分–产生更逼真的图像所需的许多技术都不支持，或者可以理解为使用WebGL不是一个最优选择。因此，iTwin.js渲染机制提供了各种各样的参数来支持基础设施数字孪生的显示效果。<br><a name="nw3Gg"></a></p>
+<h2 id="Lighting-and-environment"><a href="#Lighting-and-environment" class="headerlink" title="Lighting and environment"></a>Lighting and environment</h2><p>视图的光线效果和环境效果通过视图的DisplayStyleState来设定。</p>
+<ul>
+<li><code>LightSettings</code>定义定向、纵向、环境和半球形光源；以及控制镜面、<code>Cel-shadow</code>和<code>Fresnel</code>效果；</li>
+<li><code>SolarShadowSettings</code>（光线阴影设置）根据给定地点和日期的现实世界的太阳位置产生阴影</li>
+<li><code>AmbientOcclusion</code>可以模拟阴影；</li>
+<li><code>Environment</code>可以提供一个装饰性的天空盒或天空球；</li>
+</ul>
+<p>下面的图片说明了不同的光线设置和环境设置对同一视图的影响。<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/lighting.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/lighting.png" class="lozad post-image"><br><a name="hyded"></a></p>
+<h2 id="Materials"><a href="#Materials" class="headerlink" title="Materials"></a>Materials</h2><p>iModel 中的 <code>RenderMaterialElements </code>可以存储许多 <code>RenderMaterial </code>属性供渲染器使用。但是，基于 WebGL 的显示机制目前仅支持以下属性的一小部分：</p>
+<ul>
+<li>漫反射颜色和重量</li>
+<li>透明度</li>
+<li>镜面反射颜色、指数和权重</li>
+<li>纹理贴图和权重<br><a name="OWTuv"></a></li>
+</ul>
+<h1 id="Clipping-and-section-cut-graphics"><a href="#Clipping-and-section-cut-graphics" class="headerlink" title="Clipping and section-cut graphics"></a>Clipping and section-cut graphics</h1><p>iTwin.js渲染机制支持使用”矢量裁剪”在视图中剪除部分几何图形。这对于隔离 iModel 中部分模型、剖面图的可视化和超建模有着非常重要的作用。<br><a name="mwala"></a></p>
+<h2 id="Clipping"><a href="#Clipping" class="headerlink" title="Clipping"></a>Clipping</h2><p>矢量裁剪可以由任意数量的凸形或凹形形状构成。剪切可以应用于场景图的任何级别 - 例如，一个剪辑可以应用于视图的内容，另一个剪辑可以应用于视图中的特定模型，第三个剪辑可以应用于该模型中的一组图形;最里面的剪辑将与外部剪辑相交，以产生最终的剪辑。默认情况下，仅显示剪辑内部的几何图形。<code>ClipStyle </code>可以通过指定要应用于剪辑内部和&#x2F;或外部几何图形的颜色来覆盖此行为。<br>下图显示了应用于房屋模型以显示内部的剪贴平面。<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/clipping.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/clipping.png" class="lozad post-image"><br><a name="zAEPl"></a></p>
+<h2 id="Section-cut-graphics"><a href="#Section-cut-graphics" class="headerlink" title="Section-cut graphics"></a>Section-cut graphics</h2><p>默认情况下，与剪裁平面相交的几何体会在相交处被简单地截断。例如，如果你把一堵墙切成两半，墙的轮廓将显示在剪贴平面上，允许你看到墙的 “内部”，如上图所示。一个显示样式的<code>CutStyle</code>可以在剪辑平面的交叉点上产生分段切割的几何图形，这样，被切成两半的墙将继续显示为一个实体对象。<code>CutStyle</code>也可以选择性地覆盖几何体在剪贴交汇处的外观，包括可见边缘的显示。<br>从上面看被剪切的房屋模型，在剪切平面的交叉点上产生了截面切割图形。具有可见边缘的分段切割图形，根据<code>CutStyle</code>进行处理。<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/section.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/section.png" class="lozad post-image"><br><a name="KWCbC"></a></p>
+<h1 id="2d-drawings-and-sheets"><a href="#2d-drawings-and-sheets" class="headerlink" title="2d drawings and sheets"></a>2d drawings and sheets</h1><p>iTwin.js支持两种类型的2D模型–Drawings和Sheets，它们可以分别使用<code>DrawingViewState</code>或<code>SheetViewState</code>进行可视化。</p>
+<ul>
+<li>Design model中用来存放用户的设计内容；</li>
+<li>Drawing model中是对Design model的某个保存视图（SavedView）的引用，然后在Drawing model中做标注；</li>
+<li>Sheet model又是对Drawing model的引用，可将多个Drawing model组合到一个Sheet model中供最终的出图打印；</li>
+<li>Design model和Sheet model都可以是3D和2D的，但Drawing model只能是2D的。<br><a name="rH9N7"></a></li>
+</ul>
+<h2 id="Drawings"><a href="#Drawings" class="headerlink" title="Drawings"></a>Drawings</h2><p>图形通常用于提供空间模型子集（例如，楼层平面图、剖面图和立面图）的二维表示形式。它们通常是通过用一个或多个剪裁平面对空间视图进行切片来自动生成二维切割几何图形。切割后的几何图形通常与生成它的原始 三维几何图形保持对应关系。随后，可以使用文本、标注和度量值对绘图进行注释。在截面绘制的特殊情况下，仅针对 三维几何的一小部分（例如，舱口线、门摆动等）生成 二维几何图形，或者根本不生成任何几何图形。在这种情况下，空间视图的内容将直接渲染到应用了修剪平面的 二维工程视图中。<br>其他类型的图形可能与空间坐标（例如，逻辑示意图或草图）没有相关性。<br>从空间视图生成的带注释的平面图图形：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/drawings.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/drawings.png" class="lozad post-image"><br><a name="sYrjP"></a></p>
+<h2 id="Sheets"><a href="#Sheets" class="headerlink" title="Sheets"></a>Sheets</h2><p>图纸代表现实世界中具有精确物理尺寸的图纸，旨在打印到实际的纸张上–尽管涉及图纸的纯数字工作流程正变得越来越普遍。大多数图纸都有一个代表其物理尺寸的边界。在这个边框内，它们可以嵌入任何数量的（按比例缩小的）图纸和&#x2F;或空间视图，以及像时间表和标题块这样的注释。</p>
+<p>如下为一张带有标题和两个嵌入式平面图的图纸。<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/sheets.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/sheets.png" class="lozad post-image"><br><a name="ECO9L"></a></p>
+<h3 id><a href="#" class="headerlink" title></a><br></h3><p><a name="oDuSx"></a></p>
+<h1 id="Hyper-modeling"><a href="#Hyper-modeling" class="headerlink" title="Hyper-modeling"></a>Hyper-modeling</h1><p>超建模是一种将 2D 文件集成到空间视图中的方法。激活超建模后，将显示一组标记，对应于空间模型中的剖面草图定位。点击标记可在三维坐标空间中切换相应图形或图纸的显示，从而允许用户在其空间模型的背景下可视化其 2D 文档（包括注释）。</p>
+<p><a name="Z4w2s"></a></p>
+<h1 id="Edge-display"><a href="#Edge-display" class="headerlink" title="Edge display"></a>Edge display</h1><p>在许多面向传统CAD 的工作流中，曲面边缘的可视化可能与曲面本身的可视化一样重要。iTwin.js渲染器支持以线框模式（无曲面）或与其曲面一起显示边缘。当同时显示曲面和边时，将采用特殊的渲染技术以确保边缘总是画在其对应的曲面前面，以防止发生 z 锯齿。<br><a name="oqhHU"></a></p>
+<h2 id="Render-modes"><a href="#Render-modes" class="headerlink" title="Render modes"></a>Render modes</h2><p>iTwin.js支持四种内置渲染模式，其中包括影响边缘和表面的显示方式。</p>
+<ul>
+<li>线框：仅绘制边缘。</li>
+<li>平滑着色：使用材质和光照绘制表面。还可以选择显示边。</li>
+<li>实体填充：使用底层元素颜色在没有材质或光照的情况下绘制曲面。每个曲面的边缘都以所选的灰色阴影显示，以便与元素颜色和视图的背景色形成最佳对比度。</li>
+<li>隐藏线：使用视图的背景色绘制表面时不使用材质或照明。边缘使用基础元素颜色显示。</li>
+</ul>
+<p>后面两种模式有点老套；一般来说，使用平滑阴影模式并启用可见边缘，可以获得更多视觉上的效果。<br><a name="mJ8Fa"></a></p>
+<h2 id="Edge-appearance"><a href="#Edge-appearance" class="headerlink" title="Edge appearance"></a>Edge appearance</h2><p><code>DisplayStyleState</code>可以使用<code>HiddenLine.Settings</code>覆盖它们的颜色、宽度和&#x2F;或样式来定制边缘显示样式。<br>“Comic Book”, “Schematic”, “Illustration”, 和”Architectural: Monochrome” 都是边缘显示效果<br><a name="SQ6JT"></a></p>
+<h1 id="Appearance-overrides"><a href="#Appearance-overrides" class="headerlink" title="Appearance overrides"></a>Appearance overrides</h1><p>iTwin.js渲染器提供了动态覆盖tiles中要素外观（与几何元素相关）的功能。渲染器使用嵌入在每个tiles中的特征表来生成查找表，顶点着色器可以从中获取覆盖。可以使用<code>FeatureOverrides</code>覆盖以下方面：</p>
+<ul>
+<li>颜色和透明度；</li>
+<li>线宽和样式；</li>
+<li>可见性 - 是否绘制了要素；</li>
+<li>强调性 - 应用于特征的轮廓效果，使其脱颖而出；</li>
+<li>定位性 - 工具与功能交互的能力；</li>
+<li>是否应用材质。</li>
+</ul>
+<p>外观覆盖可以基于模型、元素、子类别、几何类的任意组合来应用。它们从各种来源聚合，包括：</p>
+<ul>
+<li>由<code>CategorySelector</code>指定的可见类别;</li>
+<li>由显示样式指定的每个模型、每个子类别和每个几何类的覆盖；</li>
+<li>控制视图动画的 <code>RenderTimeline </code>脚本;</li>
+<li>显示样式的<code>PlanProjectionSettings</code>;</li>
+<li>由Tile树提供的<code>FeatureAppearanceProviders</code>;</li>
+<li>在视口中注册的任意数量的 <code>FeatureOverrideProvider</code>。</li>
+</ul>
+<p>在下图中，<code>EmphasizeElements</code>将重点放在少数元素上，同时通过覆盖其颜色和透明度来淡出其余元素：<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/appearance.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/appearance.png" class="lozad post-image"><br><a name="NQ7dz"></a></p>
+<h1 id="Particle-effects"><a href="#Particle-effects" class="headerlink" title="Particle effects"></a>Particle effects</h1><p>iTwin.js支持使用粒子系统显示大量类似对象（称为”粒子”）。使用粒子收集生成器，可以定义每个粒子要使用的图像及其比例、位置、旋转、透明度和其他属性。这些属性可以根据你的模拟逻辑每隔一帧就更新一次，并使用实例化技术有效地重新渲染。除了在模拟火灾和天气等效果方面的典型用途外，粒子集合还可用于模拟和物联网可视化。例如：</p>
+<ul>
+<li>雨雪效果</li>
+<li>火灾和烟雾效果</li>
+<li>使用从OpenStreetMaps获得的道路信息对世界上任何地方穿越道路的数万辆汽车进行交通模拟，以进行准确的导航（示例即将推出）。</li>
+</ul>
+<p>在下图中，使用粒子效果模拟了降雪：<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/particle.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/particle.png" class="lozad post-image"><br><a name="WEfMM"></a></p>
+<h1 id="Screen-space-effects"><a href="#Screen-space-effects" class="headerlink" title="Screen-space effects"></a>Screen-space effects</h1><p>视口空间效果允许应用程序操作视口生成的图像。使用<code>ScreenSpaceEffectBuilder</code>，应用程序提供着色器代码片段，这些代码段将图像作为输入并输出新图像。这个简单的过程可以产生各种各样的效果，而且这些效果可以被链起来，使一个效果输出的图像成为下一个效果的输入。<br><a target="_blank" rel="noopener" href="https://www.itwinjs.org/sample-showcase/?group=Viewer+Features&sample=screen-space-effects-sample&imodel=Villa">此示例</a>演示了镜头失真、晕影和饱和度效果。<br>具有广角镜头的相机，未应用视口空间效果：<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/screen.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/screen.png" class="lozad post-image"><br>与上面相同的视图，应用视口空间效果来模拟镜头失真：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/screen-space.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/screen-space.png" class="lozad post-image"><br><a name="pPPFL"></a></p>
+<h1 id="Classification-and-masking"><a href="#Classification-and-masking" class="headerlink" title="Classification and masking"></a>Classification and masking</h1><p>空间分类和平面剪辑遮罩（掩膜）是使用一组模型自定义另一组模型的可视化和&#x2F;或行为的相关方法。普遍适用于实景模型。<br><a name="Ha1RV"></a></p>
+<h2 id="Spatial-classification"><a href="#Spatial-classification" class="headerlink" title="Spatial classification"></a>Spatial classification</h2><p>空间分类使用一个或多个设计模型，通过将实景模型的某些部分与设计模型中的元素相关联，对实景模型进行处理。支持两种类型的分类：</p>
+<ul>
+<li>平面分类：将设计模型投影到一个平面上，与从图元封装中拉伸的体积相交的实景模型区域将按该图元进行分类。</li>
+<li>体积分类：与元素的 3d 体积相交的实景模型区域按该元素进行分类。</li>
+</ul>
+<p>实景模型的已分类和未分类部分可以显示为法线、隐藏或灰显。还可以使用分类元素的颜色对已分类的部分进行重新着色，或进行隐藏。<br>工具与实景模型的分类区域进行交互，就好像它们正在与分类元素交互一样。例如，将鼠标悬停在已分类区域上将显示一个工具提示，其中包含有关分类元素的信息，选择该元素可以显示该元素的属性。<br><a name="Ru0Zt"></a></p>
+<h2 id="Planar-clip-masks"><a href="#Planar-clip-masks" class="headerlink" title="Planar clip masks"></a>Planar clip masks</h2><p>与平面分类一样，设计模型被投射到一个平面上以创建掩模。然后，该遮罩可用于剪除实景模型、地形和&#x2F;或地图图像的部分。默认情况下，与遮罩相交的部分被剪掉。用于构建遮罩的几何体可以根据模型、子类别和元素ID进行过滤。</p>
+<p>下图为采石场的实景模型与背景地图一起显示–观察地图如何掩盖采石场的挖掘部分:<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar.png" class="lozad post-image"><br>同样的采石场模型，现实模型完全掩盖了背景图，露出了挖掘的痕迹:<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar1.png" class="lozad post-image"><br>下图为地铁隧道与城市聚合体的例子，设计模型被实景模型所掩盖，从而使地下部分显示为半透明状:<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/planar2.png" class="lozad post-image"><br><a name="KfQIW"></a></p>
+<h1 id="Thematic-visualization"><a href="#Thematic-visualization" class="headerlink" title="Thematic visualization"></a>Thematic visualization</h1><p>主题显示将颜色渐变应用于场景中，以帮助可视化场景中几何图形的属性。支持以下属性：</p>
+<ul>
+<li>高程：颜色是根据世界空间中的 Z 位置分配的。</li>
+<li>坡度：颜色是根据表面和给定轴（通常是世界向上矢量）之间的角度分配的。</li>
+<li>山体阴影：颜色是根据太阳照射在表面上的方向分配的。</li>
+<li>传感器距离：给定放置在场景中任意数量的传感器并提供传感器读数值，根据传感器提供的值分配颜色，并按与每个传感器的距离加权。</li>
+</ul>
+<p>渐变可以平滑地应用，也可以使用离散的步骤。阶梯渐变可以选择显示每个离散颜色之间的分隔符;或者分隔符可以自行显示，从而生成等值线可视化。它可以应用于设计模型、实景模型和 三维地形网格。<br><a name="EPeCc"></a></p>
+<h2 id="Example-images"><a href="#Example-images" class="headerlink" title="Example images"></a>Example images</h2><p>主题高度 - 阶梯式：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example.png" class="lozad post-image"><br>主题高度 - 带分隔符的阶梯：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example2.png" class="lozad post-image"><br>主题高度 - 等值线：<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example3.png" class="lozad post-image"><br>主题山体阴影：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example4.png" class="lozad post-image"><br>主题坡度：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/example5.png" class="lozad post-image"><br><br><a name="JU9ns"></a></p>
+<h1 id="Timeline-animation"><a href="#Timeline-animation" class="headerlink" title="Timeline animation"></a>Timeline animation</h1><p>时间轴动画允许在一段时间内可视化 iModel 内的变化。例如，施工项目通常希望在施工计划期间可视化模型在给定点的状态。为此，可以将 <code>RenderSchedule.Script </code>与描述此可视化效果的显示样式相关联。<br>计划脚本将场景中的元素集划分为动画节点。每个节点都有一个相应的时间轴，该时间轴描述了如何通过以下方式对元素进行动画处理：</p>
+<ul>
+<li>更改其颜色、透明度或可见性;</li>
+<li>更改不同的剪切平面、角度；</li>
+<li>更改对应时间变化的差异。</li>
+</ul>
+<p>随着脚本播放过程中时间的推进，将查阅时间线在当前时间点的值。这些值可以在时间点之间线性插值，也可以量化为离散时间点，根据脚本调整颜色和透明度。<br>下面的GIF说明了根据其渲染时间轴构建模型的动画：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/timeline.gif" alt="timeline-animation.gif" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/timeline.gif" class="lozad post-image"><br><a name="Z4w0q"></a></p>
+<h1 id="Element-graphics"><a href="#Element-graphics" class="headerlink" title="Element graphics"></a>Element graphics</h1><p>iTwin.js渲染器旨在渲染Tiles，而不是渲染元素。但在某些情况下，显示单个元素的图形很有用。例如，修改元素几何图形的工具可能希望在用户与元素交互时显示其效果的预览。或者，模拟可能希望临时为少数元素添加动画效果。<br><code>TileAdmin.requestElementGraphics </code>接受元素 Id 或任意 <code>GeometryStream</code>（从中生成图形）以及其他选项（如指定所需细节级别的LOD）。它以 iModel Tiles的格式返回图形，然后可以将其提供给读取<code>ElementGraphics</code>以生成用于在视口中显示和渲染。<br>爆炸功能即可清晰说明此节内容。<br><a name="DMdH5"></a></p>
+<h1 id="Multi-sample-anti-aliasing"><a href="#Multi-sample-anti-aliasing" class="headerlink" title="Multi-sample anti-aliasing"></a>Multi-sample anti-aliasing</h1><p>iTwin.js渲染器支持多样本抗锯齿（”MSAA”），以显示渲染平滑锯齿线和多边形边缘。所生成图像的质量，以及帧速率的潜在降低会随着请求的样本数量而增加。样本数为 2 的幂，最高可达图形硬件支持的最大值。大多数支持 MSAA 的硬件最多支持 8 个或 16 个样本 。因此， 2、4、8 和 16 表示离散的抗锯齿程度。中间值向下舍入到最接近的 2 的幂。值为 1 或更小表示不应应用消除锯齿。<br>可以通过以下两种方式之一启用此功能：<br><a name="gbSwo"></a></p>
+<h2 id="Controlling-anti-aliasing-for-a-specific-viewport"><a href="#Controlling-anti-aliasing-for-a-specific-viewport" class="headerlink" title="Controlling anti-aliasing for a specific viewport"></a>Controlling anti-aliasing for a specific viewport</h2><p>通过<code>Viewport.antialiasSamples </code>获取或设置视口的MSAA样本数。</p>
+<pre class="highlight"><span class="line">viewport.<span class="property">antialiasSamples</span> = <span class="number">8</span>; <span class="comment">// Enable 8x MSAA</span></span><br><span class="line">viewport.<span class="property">antialiasSamples</span> = <span class="number">1</span>; <span class="comment">// Disable MSAA</span></span><br></pre>
+<p><a name="JfMgB"></a></p>
+<h2 id="Controlling-anti-aliasing-for-all-viewports"><a href="#Controlling-anti-aliasing-for-all-viewports" class="headerlink" title="Controlling anti-aliasing for all viewports"></a>Controlling anti-aliasing for all viewports</h2><p>通过<code>ViewManager.setAntialiasingAllViews</code>为所有当前和后续打开的视口设置MSAA样本数。</p>
+<pre class="highlight"><span class="line"><span class="title class_">IModelApp</span>.<span class="property">viewManager</span>.<span class="title function_">setAntialiasingAllViews</span>(<span class="number">8</span>); <span class="comment">// Enable 8x MSAA</span></span><br><span class="line"><span class="title class_">IModelApp</span>.<span class="property">viewManager</span>.<span class="title function_">setAntialiasingAllViews</span>(<span class="number">1</span>); <span class="comment">// Disable MSAA</span></span><br></pre>
+<p><a name="dZsVK"></a></p>
+<h2 id="Comparison-images"><a href="#Comparison-images" class="headerlink" title="Comparison images"></a>Comparison images</h2><p>左侧无抗锯齿，右侧为 8 个 MSAA。窗户和楼梯周围的效果特别明显：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/comparison1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/comparison1.png" class="lozad post-image"><br>左侧无抗锯齿，右侧为 8 个 MSAA。这种效果在远处的树叶周围尤其明显：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/comparison2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/comparison2.png" class="lozad post-image"><br><br><a name="V7kk6"></a></p>
+<h1 id="Wiremesh-display"><a href="#Wiremesh-display" class="headerlink" title="Wiremesh display"></a>Wiremesh display</h1><p>iTwin.js渲染器支持显示表面的边缘，但实景模型通常不提供边缘信息，有时可视化网格的基础三角测量会更有用。<code>ViewFlags.wiremesh </code>为设计模型和实景模型启用线网显示。<br>应用于实景模型的可视化网格：<br><img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/wiremesh.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/wiremesh.png" class="lozad post-image"><br>应用于工厂模型的可视化网格：<img src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/wiremesh1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/wiremesh1.png" class="lozad post-image"></p>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - Lod优化 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 基础工具 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Configuration"><span class="toc-text">Configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WebGL"><span class="toc-text">WebGL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Alternatives"><span class="toc-text">Alternatives</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Tile-based-rendering"><span class="toc-text">Tile-based rendering</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Scene-creation"><span class="toc-text">Scene creation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-loading"><span class="toc-text">Tile loading</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Resource-management"><span class="toc-text">Resource management</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Lighting-materials-and-environment"><span class="toc-text">Lighting, materials, and environment</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lighting-and-environment"><span class="toc-text">Lighting and environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Materials"><span class="toc-text">Materials</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Clipping-and-section-cut-graphics"><span class="toc-text">Clipping and section-cut graphics</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Clipping"><span class="toc-text">Clipping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Section-cut-graphics"><span class="toc-text">Section-cut graphics</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2d-drawings-and-sheets"><span class="toc-text">2d drawings and sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Drawings"><span class="toc-text">Drawings</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sheets"><span class="toc-text">Sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hyper-modeling"><span class="toc-text">Hyper-modeling</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Edge-display"><span class="toc-text">Edge display</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Render-modes"><span class="toc-text">Render modes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Edge-appearance"><span class="toc-text">Edge appearance</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Appearance-overrides"><span class="toc-text">Appearance overrides</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Particle-effects"><span class="toc-text">Particle effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Screen-space-effects"><span class="toc-text">Screen-space effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Classification-and-masking"><span class="toc-text">Classification and masking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spatial-classification"><span class="toc-text">Spatial classification</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Planar-clip-masks"><span class="toc-text">Planar clip masks</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thematic-visualization"><span class="toc-text">Thematic visualization</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-images"><span class="toc-text">Example images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Timeline-animation"><span class="toc-text">Timeline animation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Element-graphics"><span class="toc-text">Element graphics</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Multi-sample-anti-aliasing"><span class="toc-text">Multi-sample anti-aliasing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-a-specific-viewport"><span class="toc-text">Controlling anti-aliasing for a specific viewport</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-all-viewports"><span class="toc-text">Controlling anti-aliasing for all viewports</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparison-images"><span class="toc-text">Comparison images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Wiremesh-display"><span class="toc-text">Wiremesh display</span></a></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">zeming</p>
+<p class="author-description">designed by theme-kaze</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>1</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Configuration"><span class="toc-text">Configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WebGL"><span class="toc-text">WebGL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Alternatives"><span class="toc-text">Alternatives</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Tile-based-rendering"><span class="toc-text">Tile-based rendering</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Scene-creation"><span class="toc-text">Scene creation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-loading"><span class="toc-text">Tile loading</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Resource-management"><span class="toc-text">Resource management</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Lighting-materials-and-environment"><span class="toc-text">Lighting, materials, and environment</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lighting-and-environment"><span class="toc-text">Lighting and environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Materials"><span class="toc-text">Materials</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Clipping-and-section-cut-graphics"><span class="toc-text">Clipping and section-cut graphics</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Clipping"><span class="toc-text">Clipping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Section-cut-graphics"><span class="toc-text">Section-cut graphics</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2d-drawings-and-sheets"><span class="toc-text">2d drawings and sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Drawings"><span class="toc-text">Drawings</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sheets"><span class="toc-text">Sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hyper-modeling"><span class="toc-text">Hyper-modeling</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Edge-display"><span class="toc-text">Edge display</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Render-modes"><span class="toc-text">Render modes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Edge-appearance"><span class="toc-text">Edge appearance</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Appearance-overrides"><span class="toc-text">Appearance overrides</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Particle-effects"><span class="toc-text">Particle effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Screen-space-effects"><span class="toc-text">Screen-space effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Classification-and-masking"><span class="toc-text">Classification and masking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spatial-classification"><span class="toc-text">Spatial classification</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Planar-clip-masks"><span class="toc-text">Planar clip masks</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thematic-visualization"><span class="toc-text">Thematic visualization</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-images"><span class="toc-text">Example images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Timeline-animation"><span class="toc-text">Timeline animation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Element-graphics"><span class="toc-text">Element graphics</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Multi-sample-anti-aliasing"><span class="toc-text">Multi-sample anti-aliasing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-a-specific-viewport"><span class="toc-text">Controlling anti-aliasing for a specific viewport</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-all-viewports"><span class="toc-text">Controlling anti-aliasing for all viewports</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparison-images"><span class="toc-text">Comparison images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Wiremesh-display"><span class="toc-text">Wiremesh display</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Configuration"><span class="toc-text">Configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WebGL"><span class="toc-text">WebGL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Alternatives"><span class="toc-text">Alternatives</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Tile-based-rendering"><span class="toc-text">Tile-based rendering</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Scene-creation"><span class="toc-text">Scene creation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-loading"><span class="toc-text">Tile loading</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Resource-management"><span class="toc-text">Resource management</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Lighting-materials-and-environment"><span class="toc-text">Lighting, materials, and environment</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lighting-and-environment"><span class="toc-text">Lighting and environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Materials"><span class="toc-text">Materials</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Clipping-and-section-cut-graphics"><span class="toc-text">Clipping and section-cut graphics</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Clipping"><span class="toc-text">Clipping</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Section-cut-graphics"><span class="toc-text">Section-cut graphics</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2d-drawings-and-sheets"><span class="toc-text">2d drawings and sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Drawings"><span class="toc-text">Drawings</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sheets"><span class="toc-text">Sheets</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hyper-modeling"><span class="toc-text">Hyper-modeling</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Edge-display"><span class="toc-text">Edge display</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Render-modes"><span class="toc-text">Render modes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Edge-appearance"><span class="toc-text">Edge appearance</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Appearance-overrides"><span class="toc-text">Appearance overrides</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Particle-effects"><span class="toc-text">Particle effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Screen-space-effects"><span class="toc-text">Screen-space effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Classification-and-masking"><span class="toc-text">Classification and masking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spatial-classification"><span class="toc-text">Spatial classification</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Planar-clip-masks"><span class="toc-text">Planar clip masks</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thematic-visualization"><span class="toc-text">Thematic visualization</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Example-images"><span class="toc-text">Example images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Timeline-animation"><span class="toc-text">Timeline animation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Element-graphics"><span class="toc-text">Element graphics</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Multi-sample-anti-aliasing"><span class="toc-text">Multi-sample anti-aliasing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-a-specific-viewport"><span class="toc-text">Controlling anti-aliasing for a specific viewport</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Controlling-anti-aliasing-for-all-viewports"><span class="toc-text">Controlling anti-aliasing for all viewports</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparison-images"><span class="toc-text">Comparison images</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Wiremesh-display"><span class="toc-text">Wiremesh display</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-07</div>
+        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-03-25</div>
+        <a href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 渲染系统</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-25</div>
+        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 基础工具</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 存储结构</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>

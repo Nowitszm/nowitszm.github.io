@@ -45,7 +45,7 @@
         content="2021-06-25">
       <meta 
         property="og:article:modified_time" 
-        content="2022-06-14">
+        content="2022-06-16">
       <meta 
         property="og:article:author" 
         content="zeming">
@@ -270,7 +270,7 @@
     
     
       <span class="dot"></span>
-      <span>847 words</span>
+      <span>846 words</span>
     
   </div>
   
@@ -297,12 +297,9 @@
   <div 
     id="section" 
     class="post-content">
-    <p><a target="_blank" rel="noopener" href="https://www.itwinjs.org/learning/frontend/tools/">
-</a><br><code>Tools</code>是指用户执行操作的JavaScript类。有两个主要工具类别，即时工具和交互式工具。</p>
-<h2 id="即时工具（Immediate-Tools）"><a href="#即时工具（Immediate-Tools）" class="headerlink" title="即时工具（Immediate Tools）"></a>即时工具（Immediate Tools）</h2><hr>
-<p>即时工具无需进一步输入即可立即执行其分配的任务。它们不会成为活动工具，而是作为工具的直接子类实现。即时工具最大的特点是用户通过工具的调用直接导致应用程序状态发生改变。</p>
-<h2 id="交互式工具（Interactive-Tools）"><a href="#交互式工具（Interactive-Tools）" class="headerlink" title="交互式工具（Interactive Tools）"></a>交互式工具（Interactive Tools）</h2><hr>
-<p>有三种交互式工具分类，每一种都是通过对<code>InteractiveTool</code>进行子类化来实现的，来最好地满足特定的目标。</p>
+    <p><code>Tools</code>是指用户执行操作的JavaScript类。有两个主要工具类别，即时工具和交互式工具。</p>
+<h2 id="即时工具（Immediate-Tools）"><a href="#即时工具（Immediate-Tools）" class="headerlink" title="即时工具（Immediate Tools）"></a>即时工具（Immediate Tools）</h2><p>即时工具无需进一步输入即可立即执行其分配的任务。它们不会成为活动工具，而是作为工具的直接子类实现。即时工具最大的特点是用户通过工具的调用直接导致应用程序状态发生改变。</p>
+<h2 id="交互式工具（Interactive-Tools）"><a href="#交互式工具（Interactive-Tools）" class="headerlink" title="交互式工具（Interactive Tools）"></a>交互式工具（Interactive Tools）</h2><p>有三种交互式工具分类，每一种都是通过对<code>InteractiveTool</code>进行子类化来实现的，来最好地满足特定的目标。</p>
 <ul>
 <li><code>ViewTool</code>操纵视图的交互式工具。例如执行平移、缩放和旋转等查看操作。<ul>
 <li>在执行过程中暂停活动工具，完成后恢复活动工具。</li>
@@ -321,18 +318,14 @@
 </ul>
 </li>
 </ul>
-<h2 id="工具调用"><a href="#工具调用" class="headerlink" title="工具调用"></a>工具调用</h2><hr>
-<pre><code> 通常通过单击相关图标或使用命令解析器调用工具。可以使用`ToolRegistry.run`方法以编程方式调用工具，该方法将 `toolId `作为其第一个参数，然后允许将可选参数传递给工具的构造函数及其 `run `方法。
-</code></pre>
-<h2 id="工具管理"><a href="#工具管理" class="headerlink" title="工具管理"></a>工具管理</h2><hr>
-<p><code>ToolAdmin</code>类监视来自视图窗口的低级输入的集合（点击事件、移动事件、触摸事件、计时器事件等）;将这些输入解释为工具可以轻松处理的高级事件（iTwin.js坐标中的数据点，运动事件等，并应用了适当的锁定和精确捕捉校正）;并将这些输入路由到相应的工具。<br>解释的高级事件的路由如下：</p>
+<h2 id="工具调用"><a href="#工具调用" class="headerlink" title="工具调用"></a>工具调用</h2><p>通常通过点击相关图标或使用命令解析器调用工具。可以使用<code>ToolRegistry.run</code>方法以编程方式调用工具，该方法将<code>toolId</code>作为第一个参数，然后允许将可选参数传递给工具的构造函数及其<code>run</code>方法。</p>
+<h2 id="工具管理"><a href="#工具管理" class="headerlink" title="工具管理"></a>工具管理</h2><p><code>ToolAdmin</code>类监视来自视图窗口的低级输入的集合（点击事件、移动事件、触摸事件、计时器事件等）;将这些输入解释为工具可以轻松处理的高级事件（iTwin.js坐标中的数据点，运动事件等，并应用了适当的锁定和精确捕捉校正）;并将这些输入路由到相应的工具。<br>解释的高级事件的路由如下：</p>
 <ul>
 <li>如果存在激活的工具，则事件将定向到该工具。激活的工具可以处理特定事件，也可以忽略它。</li>
 <li>如果激活的工具不处理特定事件，则可能会将其定向到<code>Idle Tool</code></li>
 </ul>
 <p>如上所述，<code>ViewTool</code>或<code>Input Collector</code>可以暂时中断<code>Primitive tool</code>。<code>ToolAdmin </code>则以一种灵活的方式处理该序列。</p>
-<h2 id="默认工具（Idle-Tool）"><a href="#默认工具（Idle-Tool）" class="headerlink" title="默认工具（Idle Tool）"></a>默认工具（Idle Tool）</h2><hr>
-<pre><code>在iTwin.js中   `Idle Tool`是 `Interactive Tool`的一个子类，用于查找启动View工具的输入。
+<h2 id="默认工具（Idle-Tool）"><a href="#默认工具（Idle-Tool）" class="headerlink" title="默认工具（Idle Tool）"></a>默认工具（Idle Tool）</h2><pre><code>在iTwin.js中   `Idle Tool`是 `Interactive Tool`的一个子类，用于查找启动View工具的输入。
 </code></pre>
 <p>对于iTwin应用来说，有一些默认的工具事件。如果没有激活的工具或者激活的工具没有指定事件，输入事件将转发到默认工具。鼠标事件和触摸手势转换都是默认的工具，如：旋转、平移、缩放、拟合等。<br>如下为默认工具:</p>
 <ul>
@@ -361,13 +354,13 @@
   
     <div class="nav-item-prev">
       <a 
-        href="/2022/06/14/hello-world/" 
+        href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
           
-            <div class="nav-title">Hello World </div>
+            <div class="nav-title">iTwin.js 理论基础 - 渲染系统 </div>
           
         </div>
       </a>
@@ -418,7 +411,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>10</span>
+    <span>8</span>
     <span>Posts</span>
   </a>
   <a 
@@ -537,23 +530,23 @@
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-06-15</div>
-        <a href="/2022/06/15/test1/"><div class="recent-posts-item-content">test1</div></a>
+        <div class="recent-posts-item-title">2022-04-07</div>
+        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-06-15</div>
-        <a href="/2022/06/15/photo/"><div class="recent-posts-item-content">photo</div></a>
+        <div class="recent-posts-item-title">2022-03-25</div>
+        <a href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 渲染系统</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-06-14</div>
-        <a href="/2022/06/14/itwin/"><div class="recent-posts-item-content">itwin</div></a>
+        <div class="recent-posts-item-title">2021-06-25</div>
+        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 基础工具</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-06-14</div>
-        <a href="/2022/06/14/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 存储结构</div></a>
       </div>
     
   </div>

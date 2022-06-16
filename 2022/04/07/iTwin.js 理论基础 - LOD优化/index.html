@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+  <title>iTwin.js 理论基础 - Lod优化</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js 理论基础 - Lod优化">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-04-07">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-06-16">
+      <meta 
+        property="og:article:author" 
+        content="zeming">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          About
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - Lod优化
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-04-07T05:19:23.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-04-07</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>3.2k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p><a name="Objiu"></a></p>
+<h1 id="iModel-tiles"><a href="#iModel-tiles" class="headerlink" title="iModel tiles"></a>iModel tiles</h1><p>iTwin.js有能力对任何标准的3d tile格式进行流化和渲染，iTwin.js也是通过这种格式来加载实景模型和地形数据。但是，iTwin.js后端生成的用于可视化的内容使用称为”iMdl”（表示”iModel”）的非标准格式，该格式针对iTwin.js提供的独特功能进行了优化。<br>Level of detail广泛用于3MX、3SM、Cesium 3D Tiles、ESRI i3s、DGN、FBX、OBJ、LODTreeExport。<br><br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/imodel.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/imodel.png" class="lozad post-image"></p>
+<p><a name="VLXU1"></a></p>
+<h2 id="Level-of-detail"><a href="#Level-of-detail" class="headerlink" title="Level of detail"></a>Level of detail</h2><p>每块Tile包含的图形的详细程度只适合于屏幕上的特定尺寸。例如，下图是房子的iModel的根（最低分辨率）Tile显示效果。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level1.png" class="lozad post-image"><br>当Tile的显示尺寸与屏幕像素差不多时，我们视野中呈现出细节水平的显示效果就会很合适。但是，如果我们放大，使其拥有更多的屏幕占比，我们会发现看似圆形的窗户和门把手不再显得很圆，更趋近于多边形。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level2.png" class="lozad post-image"><br>Tile的详细程度用Tile的 chord tolerance（弦容差）来表示。也就是说，可以用来接近曲线的最大弦长。一般来说，我们希望弦长（以米为单位）大致相当于屏幕空间中一个像素的大小。当我们放大时，和弦会变得比一个像素大，因此可以感觉到，所以我们必须要求新的Tile具有更高的细节水平（即更小的和弦公差）。<br>弦容差（有时称为弦误差或垂度误差）定义了细分曲面上任何点距原始曲面上对应点的最大距离。降低该参数的值会使细分曲面更接近原始曲面，进而生成更多小三角形，提升曲面平滑度。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level3.png" class="lozad post-image"><br>在下面的图片中，绿色和蓝色的矩形代表更高分辨率的Tile，它们是根Tile的直接子代。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level4.png" class="lozad post-image"><br>这些Tile中的圆看起来比根部瓦片中的圆要圆得多。<br>![image.png].&#x2F;iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96&#x2F;level5.png)<br>在某些情况下，整个元素可能小于一个像素，在这种情况下，它们可能被完全从Tile中省略。为了说明这一点，我们制作一个由相同的房屋组成的社区，其根Tile看起来像这样。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level6.png" class="lozad post-image"><br>如果我们放大这块Tile中的一扇门，我们会注意到除了一些明显的非圆形的圆圈，门把手完全不见了。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level7.png" class="lozad post-image"><br>这就是我们要说明的一个问题，我们只需要在适当的屏幕尺寸下显示这个Tile。事实上，这是一个重要的优化，限制了每个Tile中三角形的数量。但是如果我们放大，渲染器就会请求包括门把手在内的更高分辨率的子Tile。<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level8.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/level8.png" class="lozad post-image"><br>LOD优化的关键是对包含较大空间体积的Tile提供较低的详细程度，因此每个Tile应包含大致相同数量的三角形。由于屏幕上显示的图块数量应保持相对恒定，因此无论当前正在查看模型的哪个部分，在任何特定时间显示的三角形数量也应保持相对恒定。当用户放大查看整个模型时，模型微小的细节被省略或简化，这种级别的变化很难被肉眼识别。限制三角形的数量使我们能够很好的处理GPU资源调度并将任何规模的模型可视化。<br><a name="FAAgK"></a></p>
+<h2 id="Batching"><a href="#Batching" class="headerlink" title="Batching"></a>Batching</h2><p>除了限制提交到 GPU 的三角形数量外，Tile还会最大限度地减少”绘制调用”的数量。绘制调用是发送到 GPU 的离散命令。例如，”绘制这一堆三角形”。例如，假设我们要绘制一个由 1000 个三角形组成的场景。我们可以提交 10 个绘制调用，每个调用由 100 个三角形组成，或者 1 个绘制调用由 1000 个三角形组成。在后一种情况下，现代图形硬件的执行效率要高得多。<br>iModels由元素组成。在上面的示例房屋 iModel 中，每个窗户、门、墙壁、门把手和屋顶部分都是一个单独的元素。传统的渲染器将为每个元素生成一个三角形网格，并将每个网格作为单独的绘制调用提交。在一个由数千或数百万个元素组成的真实iModel中，这将产生太多的绘制调用，无法维持交互式帧速率。<br>iTwin.js渲染机制不渲染元素 ，它渲染Tile。考虑到与Tile体积相交的元素集合，我们努力将它们全部批处理成尽可能少的网格，最理想情况下是一个。这是通过合并元素网格来实现的，然后通过一些策略区分合并网格内的顶点来实现的，包括：</p>
+<ul>
+<li>颜色表：生成网格中每种唯一颜色的查找表。每个顶点（而不是指定其 RGBA 颜色）只是在表中指定其 8 位或 16 位整数索引。</li>
+<li>材质图集：生成网格中每个唯一 RenderMaterial 的查找表。每个顶点指定表中相应材料的 8 位整数索引，而不是为每个材料生成单独的网格。</li>
+</ul>
+<p>并不可能为每块Tile生成一个网格。例如，不透明的网格不能与透明的网格分批生成，因为它们必须在不同的通道中渲染。<br><a name="vBZGn"></a></p>
+<h3 id="Feature-tables"><a href="#Feature-tables" class="headerlink" title="Feature tables"></a>Feature tables</h3><p>每块Tile都嵌入了一个FeatureTable，描述了Tile中存在的每个独特的特性–即元素Id、子类别Id和GeometryClass的组合。Tile中的每个顶点都指定其来源于元素的24位整数索引。当渲染器想要查询某个区域（比如说，在鼠标光标位置）的哪些特征是可见的，它就会渲染与该区域相交的Tile，输出元素id，然后查询特征表以获得相应的特征。<br>FeatureTable还支持高效的重符号化。一个查询表是由当前的<code>FeatureOverrides</code>构建的。顶点着色器使用其特征id索引到此表中，并应用相应的覆盖。<br><a name="hKIxi"></a></p>
+<h2 id="Tile-tree-structure"><a href="#Tile-tree-structure" class="headerlink" title="Tile tree structure"></a>Tile tree structure</h2><p>标准的3d Tile集通常是静态的：它们由一组有限的预先发布的tile组成，这些瓦片按已知的层次结构组织。例如，Bentley ContextCapture 发布了一组Tile和一个描述其结构的 JSON 文件。显示此类Tile集只需查阅 JSON 文件并下载相应的Tile。<br>iModel Tile是不同的。由于用户可以在视图中任意放大，因此Tile集在理论上是无限的。为模型生成一组详尽的Tile是完全不切实际的。所以，在有人请求 iModel Tile之前，iModel Tile并不存在，此时它由 iTwin.js后端生成（然后选择性地缓存以供后续重用）。<br>此外，无法在浏览模型之前完全了解Tile Tree的结构，因为Tile只能在浏览模型的过程中动态创建。例如，一个特定Tile 的空间体积可能完全没有元素，因此该Tile 是空的，并且没有子Tile 。或者，Tile 的体积可能仅包含未弯曲的几何图形，在这种情况下，可能没有必要生成子Tile 来优化它，因为不会达到更高的细节水平。Tile Tree结构的这些特征和其他功能只能通过实际生成Tile 来确定。<br><a name="pZqNl"></a></p>
+<h3 id="Refinement-strategies"><a href="#Refinement-strategies" class="headerlink" title="Refinement strategies"></a>Refinement strategies</h3><p>当我们希望看到的几何图形有着更高的分辨率，这其实就是优化Tile的过程 。Tile 遵循”空间相干性”。也就是说，Tile 的子Tile 的体积必须完全包含在父Tile 的体积中。iTwin.js 采用两种Tile 优化策略：</p>
+<ul>
+<li>细分法：这是迄今为止最常见的3d tiles策略，具有多种方法，包括四叉树，八字树和k-d树。所有这些都是将父Tile再细分为较小的子卷。对于三维模型，iTwin.js 应用细分来生成 8 个子卷。父Tile 的体积在其最长轴上分成两半；然后将产生的两半体积在其最长的轴上被分割；最后，生成的 4 个子卷再次拆分到其最长轴上。此过程如下图所示。（对于 2D 模型，仅生成 4 个而不是 8 个子卷）。</li>
+</ul>
+<p><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/refinement.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/refinement.png" class="lozad post-image"></p>
+<ul>
+<li>放大法：放大法不是将Tile细分为多个较小的子Tile，而是生成与父Tile大小相同大小的单个子Tile，但其细节水平是其两倍。这种方法有助于降低深度复杂性，即当用户放大时，必须要求更多的Tile来显示延伸到屏幕上的几何图形。但是，这个方法必须要谨慎的使用，因为在不减少Tile体积的情况下过多地增加细节水平会引入浮点精度错误，从而导致图形伪影的出现。</li>
+</ul>
+<br> 
+<a name="bFlSs"></a>
+### Determining the structure
+
+
+<p>要生成一个Tile，iTwin.js 后端必须查询其边界相交的所有几何元素。然后，它遍历每个元素的几何流。任何相对于Tile的弦容差足够小的元素或几何基元都将被省略。否则，几何图形将转换为三角网格（或折线或点字符串）并被添加到Tile的批处理网格中。最后，特征表和一些元数据将嵌入到切片中。（<strong>注意</strong>：这是对Tile生成过程的极其简化的描述，省略了许多细节）<br>Tile生成过程生成的元数据是发现Tile树结构的关键。每个Tile的元数据记录包括：</p>
+<ul>
+<li>图块的图形中是否省略了任何足够小的元素或几何图形位；</li>
+<li>在Tile的体积内是否遇到任何弯曲或去掉的几何图形；</li>
+<li>包含Tile内的所有几何图形；</li>
+<li>表明将Tile的哪些子卷确定为完全为空的字段。</li>
+</ul>
+<p>在可行的情况下，测试子卷是否与单个刻面和线段相交，而不是与边界框相交；这提高了空子卷检测的准确性。<br>如果有任何几何图形被省略，或者Tile中存在任何弯曲或抽取的几何图形，则我们知道该Tile需要优化（即，它具有子Tile）；否则，LOD将没有实际意义。<br>在此背景下允许我们对观察范围执行更严格的交叉测试，以避免绘制实际上不可见的Tile。在下图中，绿色和蓝色矩形表示每个Tile的内容体积，该体积通常小于（并且永远不会大于）Tile的边界体积：<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining1.png" class="lozad post-image"><br>通过空子卷的信息我们能够省略对子Tile的请求，因为我们知道这些子Tile不会生成任何图形。在下图中，绿色矩形表示需要优化的Tile，蓝色矩形表示不需要优化的Tile。缺少矩形表示被标识为完全空的卷，因此不会对这些卷发出Tile请求。请注意，所有绿色矩形都包含弯曲几何图形，并且所有蓝色矩形仅包含未弯曲的几何图形：<br>Tile - 深度 1：<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining2.png" class="lozad post-image"><br>Tile - 深度 2：<br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/determining3.png" class="lozad post-image"><br><br><a name="zaTLn"></a></p>
+<h2 id="Optimizations"><a href="#Optimizations" class="headerlink" title="Optimizations"></a>Optimizations</h2><p>iModel tile采用许多优化措施，旨在减小Tile大小（以及扩展的 GPU 内存使用率和下载时间）并提高帧速率，包括：</p>
+<ul>
+<li>lookup tables：通常，位置、颜色、法向量等顶点数据作为顶点属性提交到 GPU。相反，iModel Tile将所有顶点数据嵌入到用作lookup tables的单一纹理中；唯一的顶点属性是每个三角形顶点的表中的 24 位索引。同样，另一个lookup tables包含有关网格中每个可见边的信息。这大大减少了冗余，从而减少了Tile。</li>
+<li>iModel tile：iTwin.js支持显示网格的边缘。这需要有关每个Tile中包含的边缘的信息，这可能会大大增加每个Tile的大小。如果当前未显示边，iTwin.js 将请求省略边信息的Tile，从而避免不必要的开销，但代价是以后启用边显示时需要请求新Tile。同样，为截面剪切图形、时间轴动画和其他目的生成特殊Tile。</li>
+<li>压缩：采用各种策略来最小化Tile的内存占用，包括位置量化、法向量的八进制编码以及使用 24 位整数作为索引。</li>
+</ul>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 渲染系统 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-tiles"><span class="toc-text">iModel tiles</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Level-of-detail"><span class="toc-text">Level of detail</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Batching"><span class="toc-text">Batching</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Feature-tables"><span class="toc-text">Feature tables</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-tree-structure"><span class="toc-text">Tile tree structure</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Refinement-strategies"><span class="toc-text">Refinement strategies</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Optimizations"><span class="toc-text">Optimizations</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://cdn.stocksnap.io/img-thumbs/960w/moon-craters_URRYFAOY7E.jpg" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">zeming</p>
+<p class="author-description">designed by theme-kaze</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>1</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="your link">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-tiles"><span class="toc-text">iModel tiles</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Level-of-detail"><span class="toc-text">Level of detail</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Batching"><span class="toc-text">Batching</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Feature-tables"><span class="toc-text">Feature tables</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-tree-structure"><span class="toc-text">Tile tree structure</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Refinement-strategies"><span class="toc-text">Refinement strategies</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Optimizations"><span class="toc-text">Optimizations</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>Catalogue
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iModel-tiles"><span class="toc-text">iModel tiles</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Level-of-detail"><span class="toc-text">Level of detail</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Batching"><span class="toc-text">Batching</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Feature-tables"><span class="toc-text">Feature tables</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tile-tree-structure"><span class="toc-text">Tile tree structure</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Refinement-strategies"><span class="toc-text">Refinement strategies</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Optimizations"><span class="toc-text">Optimizations</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-07</div>
+        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-03-25</div>
+        <a href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 渲染系统</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-25</div>
+        <a href="/2021/06/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 基础工具</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/2021/06/10/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20iModel/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 存储结构</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>
