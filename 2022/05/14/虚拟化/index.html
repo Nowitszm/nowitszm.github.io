@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+  <title>虚拟化</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="虚拟化">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-05-14">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-07-03">
+      <meta 
+        property="og:article:author" 
+        content="Zeming Li">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="Linux and cloud">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      虚拟化
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-05-14T02:36:26.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-05-14</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/Cloud/" 
+          class="post-meta-link">
+          Cloud
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>2.5k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/Linux-and-cloud/" 
+            class="post-meta-link">
+            Linux and cloud
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h1 id="一、虚拟化"><a href="#一、虚拟化" class="headerlink" title="一、虚拟化"></a>一、虚拟化</h1><h2 id="1-1-虚拟化概念"><a href="#1-1-虚拟化概念" class="headerlink" title="1.1 虚拟化概念"></a>1.1 虚拟化概念</h2><p>维基百科：“虚拟化是表示计算机资源的逻辑组（或子集）的过程，这样就可以用从原始配置中获益的方式访问它们。这种资源的新虚拟视图并不受实现、地理位置或底层资源的物理配置的限制。”<br>虚拟化（Virtualization）的定义很广泛，只要将一种形式的资源抽象成另外一种形式的技术都可以称为虚拟化技术。通常我们将虚拟化理解为将一台计算机资源通过虚拟化技术虚拟出多台逻辑计算机，每台逻辑计算机独立运行、互不干扰，可同时运行不同的操作系统和应用程序。</p>
+<h2 id="1-2-虚拟化目的"><a href="#1-2-虚拟化目的" class="headerlink" title="1.2 虚拟化目的"></a>1.2 虚拟化目的</h2><p>虚拟化技术的核心在于资源的抽象化，重新划分IT资源，可以实现IT资源的动态分配、灵活调度、跨域共享，虚拟化技术实现了物理硬件与软件逻辑架构的解耦。<br>举个例子，假设一个完整的系统有2台物理服务器，其中一台做服务端采取Linux系统运行Scada进程，一台做web客户端采取windows系统访问前端页面。每台服务器均使用40%的资源，但是由于系统的差异以及应用程序的差异，这两台服务器都需要保存。借助虚拟化技术，可以分为 2 个能够处理独立任务的特殊服务器，使用率从 40% 提高到 80%，您仍然使用相同的硬件，但可以更加高效地利用这些资源。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/1.png" class="lozad post-image"></p>
+<h2 id="1-3-云计算中的虚拟化"><a href="#1-3-云计算中的虚拟化" class="headerlink" title="1.3 云计算中的虚拟化"></a>1.3 云计算中的虚拟化</h2><p>云计算是极度依赖虚拟化的，但虚拟化并非云计算，云计算也非虚拟化，虚拟化是云计算的核心技术，但并非是云计算的核心关注点<br>云计算中的虚拟化指的是IaaS层虚拟化解决方案。IaaS层虚拟化解决方案，要符合IaaS层的基础特点，除了最基础的虚拟化软件之外，还包括，共享存储服务，镜像服务，身份认证服务，统一监控服务，以及收费管理等其他配套的服务。当然，既然是IaaS服务，必须支持对外API接口开放，支持定制开发。一般来说不是一个软件，而是一组软件组成的整理解决方案。<br>由于两者的核心理念都是从硬件中分离资源，以创建可用的环境，所以很容易被混为一谈。虚拟化有助于创建云，但它并非实现云计算的决定性技术。你可以这样理解：</p>
+<ul>
+<li>虚拟化是一种将功能与硬件分离的技术</li>
+<li>而云计算并不仅仅是依赖于这种分离的解决方案</li>
+<li>云计算的基础是虚拟化，虚拟化只是云计算的一部分</li>
+<li>虚拟化特点：分区、隔离、封装、软硬件解耦</li>
+</ul>
+<h1 id="二、虚拟化类型"><a href="#二、虚拟化类型" class="headerlink" title="二、虚拟化类型"></a>二、虚拟化类型</h1><p>整体来说虚拟化可分为全虚拟化、半虚拟化和硬件辅助虚拟化这三类。</p>
+<h2 id="2-1-全虚拟化"><a href="#2-1-全虚拟化" class="headerlink" title="2.1 全虚拟化"></a>2.1 全虚拟化</h2><p>全虚拟化（Full Virtualization）是一种由虚拟机协调操作系统和硬件的模型，结构模型如下图所示，操作系统和硬件设备之间通过Hypervisor来协调处理，抽象的VM具有完全的物理特性，虚拟化层负责捕获CPU指令，为指令访问硬件充当媒介。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/2.png" class="lozad post-image"></p>
+<p>全虚拟化为宿主机操作系统提供完整的虚拟平台，如处理器、内存、I&#x2F;O等，全虚拟化运行的宿主机操作系统无需任何修改即可迁移，但全虚拟化在性能方面不如裸机，因为Hypervisor在运行时需要占用一定的资源，另外一个影响性能开销的地方是二进制转换。<br>典型案例：VMware、Virtualbox，Virtual PC，KVM-x86</p>
+<table>
+<thead>
+<tr>
+<th>Full Virtualization</th>
+<th>Strong&amp;Weak</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Guest OS无需修改</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>用户体验</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>移植迁移</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>性能效率</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<h3 id="2-1-1-KVM"><a href="#2-1-1-KVM" class="headerlink" title="2.1.1 KVM"></a>2.1.1 KVM</h3><p>KVM是一个基于Linux内核的虚拟化技术，可以直接将Linux内核转换为Hypervisor。Linux内核能够直接管理虚拟机，直接调用Linux内核中的内存管理、进程管理子系统来管理虚拟机。<br>组成：由处于内核态的KVM模块和用户态的QEMU两部分组成</p>
+<ul>
+<li>KVM内核模块：现在是Linux kernel的一个模块，主要包括KVM虚拟化核心模块KVM.ko，以及硬件相关的KVM_intel或KVM_AMD模块；主要负责虚拟机的创建、CPU与内存虚拟化，虚拟内存分配与管理、vCPU寄存器读写等。</li>
+<li>QEMU设备模拟：实现I&#x2F;O设备虚拟化，与KVM内核交互。由KVM内核与QEMU相互配合实现虚拟机的管理。KVM会复用部分Linux内核的能力，如进程管理调度、设备驱动，内存管理等。</li>
+</ul>
+<p><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/3.png" class="lozad post-image"><br>KVM工作原理：KVM 模块让Linux 主机成为一个虚拟机监视&#x2F;管理器（VMM)，在KVM体系中，每一个Gust OS都是作为一个标准的linux进程，都可以使用linux进程管理命令管理。<br>KVM中三种模式：</p>
+<ol>
+<li>客户模式（Guest Mode）VM运行在这个模式，执行Guest非I&#x2F;O操作指令。</li>
+<li>用户模式（User Mode）QEMU运行在这个模式，实现I&#x2F;O模拟与管理。</li>
+<li>内核模式（Kernel Mode）KVM运行在这个模式，实现模式的切换（VM Exit&#x2F;VM Entry），执行特权与敏感指令。</li>
+</ol>
+<p>QEMU通过ioctl发出KVM_CREATE_VM 指令，创建了一个VM后，QEMU需要需要发送一些命令给VM，如KVM_CREATE_VCPU。这些命令当然也是通过ioctl发送的，用户程序中用ioctl发送KVM_CREATE_VM得到的返回值就是新创建的VM对应的fd(kvm_vm)，fd是创建的指向特定虚拟机实例的文件描述符，之后利用这个fd发送命令给VM进行访问控制。<br>![image.png].&#x2F;%E8%99%9A%E6%8B%9F%E5%8C%96&#x2F;4.png)<br>虚拟管理器（Virtual machine monitor）：支持一台计算机执行多个完全相同的环境，与其他计算机隔离操作，Vmm是底层对上虚拟机的管理与支持，早期的虚拟机必须先在系统上安装虚拟机操作软件，在安装系统和应用。目前主流的cpu都做了硬件支持，大多数的Vmm直接装在裸机上，极大提升了虚拟化环境的性能。</p>
+<h2 id="2-2-半虚拟化"><a href="#2-2-半虚拟化" class="headerlink" title="2.2 半虚拟化"></a>2.2 半虚拟化</h2><p>半虚拟化的核心是为了解决全虚拟化效率不高的问题，让宿主机操作系统知道是在虚拟机上运行，因此物理机执行的一些指令就会变成其他方式来执行，这就需要修改宿主机内核代码来实现，或者将Hypervisor直接安装在物理机上，多个Hypervisor上运行，定制一个特殊的Linux系统。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/5.png" class="lozad post-image"><br>半虚拟化也是利用Hypervisor来实现对底层硬件的共享访问，由于定制了一个特殊的Linux系统，这就使得宿主机的操作系统能够更契合的实现虚拟化。<br>典型案例：Xen、Vmware ESXI 、微软Hyper-v</p>
+<table>
+<thead>
+<tr>
+<th>Para Virtualization</th>
+<th>Strong&amp;Weak</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Guest OS需要修改</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>性能效率</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>用户体验</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>维护升级</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-1-Xen"><a href="#2-2-1-Xen" class="headerlink" title="2.2.1 Xen"></a>2.2.1 Xen</h3><p>Xen架构直接把操作系统内核改了，把OS改成一个轻量级的Hypervisor在里面运行一个管理所有资源调度的Domain0<br>组成：由Xen Hypervisor（虚拟化层）、Domain0（管理主机）、DomainU（用户虚拟机）<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/6.png" class="lozad post-image"></p>
+<ul>
+<li>Xen架构：各Domain之间对共享区域的访问和映射必须通过Hypervisor授权，安全性更高；</li>
+<li>Kvm架构：虚拟机之间与宿主机之间对共享区域的访问和映射无需Hypervisor授权，使用Linux裸金属内核，访问路径较短，无性能损耗；</li>
+</ul>
+<h2 id="2-3-硬件辅助虚拟化"><a href="#2-3-硬件辅助虚拟化" class="headerlink" title="2.3 硬件辅助虚拟化"></a>2.3 硬件辅助虚拟化</h2><p>Intel&#x2F;AMD等硬件厂商通过对硬件的改造来支持虚拟化技术，硬件辅助虚拟化技术（Hardware Assisted Virtualization）常用于优化全虚拟化和半虚拟化产品，最典型的例子VMware Workstation，他虽然属于全虚拟化，但在后续版本引入硬件虚拟化技术，如Intel的VT-x和AMD的AMD-V。现在市面上所有的全虚拟化和半虚拟化产品基本上都支持硬件辅助虚拟化。</p>
+<h1 id="三、虚拟化架构"><a href="#三、虚拟化架构" class="headerlink" title="三、虚拟化架构"></a>三、虚拟化架构</h1><h2 id="3-1-寄居虚拟化"><a href="#3-1-寄居虚拟化" class="headerlink" title="3.1 寄居虚拟化"></a>3.1 寄居虚拟化</h2><p>寄居虚拟化指在宿主机操作系统安装和运行虚拟化程序，依赖于宿主机操作系统对设备的支持和管理。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/7.png" class="lozad post-image"><br>特点：</p>
+<ul>
+<li>简单易于实现，由Host OS管理底层物力资源，由Hypervisor提供虚拟化功能；</li>
+<li>安装和运行应用程序以来于主机操作系统对设备支持；</li>
+<li>有两层OS，管理开销较大，性能损耗严重；</li>
+<li>虚拟机对各种物理设备的调用，都通过虚拟化层和宿主机的OS一起协调才能完成；</li>
+</ul>
+<p>典型案例：Vmware Workstation、VirtualBox等</p>
+<h2 id="3-2-裸金属虚拟化"><a href="#3-2-裸金属虚拟化" class="headerlink" title="3.2 裸金属虚拟化"></a>3.2 裸金属虚拟化</h2><p>直接将VMM安装在硬件设备上，VMM在这种模式下又叫做Hypervisor，通过Hypervisor直接管理底层物理资源，虚拟相应的操作。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/8.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/8.png" class="lozad post-image"><br>特点：</p>
+<ul>
+<li>不依赖操作系统，直接在硬件上安装虚拟化软件；</li>
+<li>支持多种操作系统，多种应用；</li>
+<li>通过虚拟层内核和服务器控制台进行管理；</li>
+<li>需要对虚拟化层的内核进行开发；</li>
+</ul>
+<p>典型案例：VMware ESX、Xen、华为FusionSphere</p>
+<h2 id="3-3-混合虚拟化"><a href="#3-3-混合虚拟化" class="headerlink" title="3.3 混合虚拟化"></a>3.3 混合虚拟化</h2><p>将一个内核模块加入到宿主机操作系统中，内核拥有虚拟化能力协调虚拟机和宿主机操作系统之间的物理硬件资源调用。<br><img src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/9.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/9.png" class="lozad post-image"><br>特点：</p>
+<ul>
+<li>相对于寄居虚拟化架构，性能高</li>
+<li>相对于裸金属虚拟化架构，不需要开发内核</li>
+<li>支持多种操作系统</li>
+<li>需要底层硬件支持虚拟化拓展功能</li>
+</ul>
+<p>典型案例：Redhat KVM</p>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - Lod优化 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">一、虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E8%99%9A%E6%8B%9F%E5%8C%96%E6%A6%82%E5%BF%B5"><span class="toc-text">1.1 虚拟化概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E8%99%9A%E6%8B%9F%E5%8C%96%E7%9B%AE%E7%9A%84"><span class="toc-text">1.2 虚拟化目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">1.3 云计算中的虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E7%B1%BB%E5%9E%8B"><span class="toc-text">二、虚拟化类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%85%A8%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.1 全虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1-KVM"><span class="toc-text">2.1.1 KVM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%8D%8A%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.2 半虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-Xen"><span class="toc-text">2.2.1 Xen</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%A1%AC%E4%BB%B6%E8%BE%85%E5%8A%A9%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.3 硬件辅助虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E6%9E%B6%E6%9E%84"><span class="toc-text">三、虚拟化架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%AF%84%E5%B1%85%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.1 寄居虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E8%A3%B8%E9%87%91%E5%B1%9E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.2 裸金属虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%B7%B7%E5%90%88%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.3 混合虚拟化</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Zeming Li</p>
+<p class="author-description"></p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>10</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>2</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>3</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://wx1.sinaimg.cn/bmiddle/e61078cely1h3fpbv07p8j20by0byjry.jpg">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://www.linkedin.cn/in/zeming-li-2b9865147">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">一、虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E8%99%9A%E6%8B%9F%E5%8C%96%E6%A6%82%E5%BF%B5"><span class="toc-text">1.1 虚拟化概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E8%99%9A%E6%8B%9F%E5%8C%96%E7%9B%AE%E7%9A%84"><span class="toc-text">1.2 虚拟化目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">1.3 云计算中的虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E7%B1%BB%E5%9E%8B"><span class="toc-text">二、虚拟化类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%85%A8%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.1 全虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1-KVM"><span class="toc-text">2.1.1 KVM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%8D%8A%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.2 半虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-Xen"><span class="toc-text">2.2.1 Xen</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%A1%AC%E4%BB%B6%E8%BE%85%E5%8A%A9%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.3 硬件辅助虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E6%9E%B6%E6%9E%84"><span class="toc-text">三、虚拟化架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%AF%84%E5%B1%85%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.1 寄居虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E8%A3%B8%E9%87%91%E5%B1%9E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.2 裸金属虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%B7%B7%E5%90%88%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.3 混合虚拟化</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/computer-graphics/">
+        <div class="categories-list-item">
+          computer-graphics
+          <span class="categories-list-item-badge">9</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Cloud/">
+        <div class="categories-list-item">
+          Cloud
+          <span class="categories-list-item-badge">1</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+      <a 
+        href="/tags/Linux-and-cloud/" 
+        title="Linux and cloud">
+        <div class="tags-list-item">Linux and cloud</div>
+      </a>
+    
+      <a 
+        href="/tags/iTwin-platform/" 
+        title="iTwin platform">
+        <div class="tags-list-item">iTwin platform</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">一、虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E8%99%9A%E6%8B%9F%E5%8C%96%E6%A6%82%E5%BF%B5"><span class="toc-text">1.1 虚拟化概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E8%99%9A%E6%8B%9F%E5%8C%96%E7%9B%AE%E7%9A%84"><span class="toc-text">1.2 虚拟化目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E4%BA%91%E8%AE%A1%E7%AE%97%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">1.3 云计算中的虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E7%B1%BB%E5%9E%8B"><span class="toc-text">二、虚拟化类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%85%A8%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.1 全虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1-KVM"><span class="toc-text">2.1.1 KVM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%8D%8A%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.2 半虚拟化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-Xen"><span class="toc-text">2.2.1 Xen</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%A1%AC%E4%BB%B6%E8%BE%85%E5%8A%A9%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">2.3 硬件辅助虚拟化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%99%9A%E6%8B%9F%E5%8C%96%E6%9E%B6%E6%9E%84"><span class="toc-text">三、虚拟化架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%AF%84%E5%B1%85%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.1 寄居虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E8%A3%B8%E9%87%91%E5%B1%9E%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.2 裸金属虚拟化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%B7%B7%E5%90%88%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text">3.3 混合虚拟化</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-14</div>
+        <a href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-07</div>
+        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-05</div>
+        <a href="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 曲线</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-03-25</div>
+        <a href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 渲染系统</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>
