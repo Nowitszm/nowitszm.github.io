@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
-  <title>Archive</title>
+  <title>iTwin.js 理论基础 - PRC接口</title>
   
     
       <meta 
         property="og:title" 
-        content="Archive">
+        content="iTwin.js 理论基础 - PRC接口">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/archives/page/2/index.html">
+        content="http://example.com/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/index.html">
     
     
       <meta 
@@ -36,6 +36,26 @@
         content="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
     
     
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-04-12">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-07-03">
+      <meta 
+        property="og:article:author" 
+        content="Zeming Li">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
     
   
   <script>
@@ -140,6 +160,8 @@
   
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
   
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
 <meta name="generator" content="Hexo 6.2.0"></head>
 
   <body>
@@ -223,98 +245,124 @@
         <div class="container">
           <div class="columns">
             <main class="main-column">
-<div class="card card-content">
-  <h1 class="widget-title">Archive</h1>
-</div>
-<div class="archive-timeline">
-  
-  
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - PRC接口
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-04-12T10:15:53.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-04-12</span>
+    </time>
     
-      <div class="archive-timeline-tag"><span>2021</span></div>
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/computer-graphics/" 
+          class="post-meta-link">
+          computer graphics
+        </a>
       
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2021-06-03</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2021/06/03/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84/"
-              class="archive-timeline-post-item">
-              iTwin.js 理论基础 - 平台架构
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2021-05-22</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2021/05/22/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83/"
-              class="archive-timeline-post-item">
-              iTwin.js 理论基础 - 基础环境
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  
+      <span class="dot"></span>
+      <span>1.3k words</span>
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2021-05-20</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2021/05/20/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/"
-              class="archive-timeline-post-item">
-              iTwin.js 理论基础 - 编码规范
-            </a>
-          </div>
-        </div>
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
       </div>
     </div>
   
-    
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2021-05-14</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2021/05/14/iTwin.js%20Roadmap/"
-              class="archive-timeline-post-item">
-              iTwin.js Roadmap
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-</div>
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h1 id="RpcInterface"><a href="#RpcInterface" class="headerlink" title="RpcInterface"></a>RpcInterface</h1><hr>
+<p>本文会对iTwin.js 中的 RPC 通信进行说明。</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><hr>
+<p>iTwin.js 应用程序的功能通常在不同的组件中实现，这些组件可能在不同的进程中运行。这些组件通过接口进行通信。这些接口可以实现为 Rpc 或 Ipc。对于Web应用程序，iTwin.js使用RpcInterfaces。<br><img src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/1.png" class="lozad post-image"><br>上图显示了一个应用程序的前端从一些后端请求操作。客户端和服务器这两个词指明了RpcInterface的两个角色：</p>
+<ul>
+<li><em>client</em> – 运行在前端的代码，并调用RpcInterface的方法。</li>
+<li><em>server</em> – 在后端运行并实现 RpcInterface 的代码。</li>
+</ul>
+<p>从 RpcInterface 派生的类定义了一组由服务器实现的操作，可从客户端调用。<br>如图所示，客户端和服务器使用 RpcManager 来管理可用的 Rpc 接口。RpcManager 在客户端公开转发 RPC 请求。另一端，RpcManager 使用服务器调度机制将请求中继到服务器中的实现。介于两者之间的是一种传输机制，该机制通过适当的通信通道将数据从客户端传递到服务器。传输机制封装在运行时应用的配置中。<br>一个典型的应用程序前端将使用多个远程组件。同样，服务器可以公开多个组件。例如，应用前端可能需要两个接口：接口 1 和接口 2。在此示例中，两者都在后端 A 中实现。<br><img src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/2.png" class="lozad post-image"><br>应用前端同样可以轻松地与多个后端配合使用，以获取所需的服务。RpcInterface 的配置参数之一是提供它的后端的标识。例如，假设前端还需要使用接口 3，该接口由后端 B 提供。<br><img src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/3.png" class="lozad post-image"><br>前端用于后端 B 的 RPC 传输配置可能与它用于后端 A 的配置不同。事实上，这是常见的情况。如果后端 A 是应用自己的后端，而后端 B 是远程服务，则应用将使用与其自己的 A 配置匹配的 RPC 配置，而对 B 使用 Web 配置。<br>如上所述，RPC 接口的客户端可以是前端代码，也可以是后端代码。这意味着后端可以调用其他后端的服务。换句话说，后端可以同时是服务器和客户端。后端通过在 RpcManager 上调用 initializeImpl 方法来配置它实现的 RpcInterfaces，并通过调用 initializeClient 来配置它使用的 RpcInterfaces。例如，假设后端 B 需要后端 C 的服务。<br><img src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/4.png" class="lozad post-image"></p>
+<h1 id="Rpc-vs-Ipc"><a href="#Rpc-vs-Ipc" class="headerlink" title="Rpc vs. Ipc"></a>Rpc vs. Ipc</h1><hr>
+<p>在 iTwin.js中，RPC（远程过程调用）和 IPC（进程间通信）都是在浏览器中运行的前端进程和在 Node.js 下运行的后端进程之间进行通信的机制。两者都可用于连接驻留在同一台计算机或通过网络连接的不同计算机上的进程。</p>
+<h2 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h2><hr>
+<p>RPC（在iTwin.js中实现）用于前端和后端松散耦合的情况。在此模式下，单个后端可能为多个前端提供服务，并且多个后端可以为来自同一前端的请求提供服务。对于Web应用程序来说，这是非常普遍的，这也是当今大部分Web体系结构被设计为无状态的原因。<br>通过RPC，从前端到后端的每个请求都必须包含授权凭据、路由信息等。这可能会给通信增加一些开销，但这也是实现横向拓展的原因。因此，通常对于Web应用程序，这是一个很好的权衡。<br>RPC 的松散耦合假设意味着严格遵守 API 语义版本兼容性，因为前端和后端组件是独立部署和修订的。RPC 初始化始终涉及验证版本兼容性要求。<br>一般来说，iTwin.js中的RPC是通过HTTP实现的。这意味着 RPC 通信必须始终由前端发起。由于协议的无状态性质，这是完全可以的，因为后端不会发送任何可以发送到特定前端的内容。</p>
+<h2 id="IPC"><a href="#IPC" class="headerlink" title="IPC"></a>IPC</h2><hr>
+<p>IPC（在iTwin.js中实现）用于前端和后端紧密耦合的情况。在此模式下，单个前端进程通过 IpcSocket api 以一对一的关系与单个后端进程配对。在iTwin.js术语中，这意味着IModelApp与IModelHost（有时称为”专用”后端）配对，并且它们的生命周期是一致的。每个都可以假设另一个可以在会话过程中保存明确的状态信息。对于编辑 iModel 的应用程序，这种关系非常有用。<br>使用 IPC，经过一些初始验证后，消息可以双向发送，而不会产生任何开销，因为连接是直接且明确的。这使得 IPC 的实现效率更高，并且可以直接实现。通常，iTwin.js中的IPC是作为套接字实现的 - 通过Electron的ipc实现桌面应用程序，或通过WebSockets实现Web或移动应用程序。IPC 的优点是后端可以主动向其前端发送消息。IpcSocket api不要求前端和后端进程驻留在同一台计算机上，只是它们的生存期是成对的。当已知它们始终位于同一台计算机上时，我们将其称为本机应用程序。</p>
 
-  <div class="nav">
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
   
     <div class="nav-item-prev">
       <a 
-        href="/archives/" 
+        href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">虚拟化 </div>
           
         </div>
       </a>
     </div>
   
   
+    <div class="nav-item-next">
+      <a 
+        href="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 法线 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
 </div>
-</main>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RpcInterface"><span class="toc-text">RpcInterface</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Rpc-vs-Ipc"><span class="toc-text">Rpc vs. Ipc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RPC"><span class="toc-text">RPC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPC"><span class="toc-text">IPC</span></a></li></ol></li></ol>
+</div></main>
             <aside class="left-column">
               
               <div class="card card-author">
@@ -375,6 +423,18 @@
                <div class="sticky-tablet">
   
   
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RpcInterface"><span class="toc-text">RpcInterface</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Rpc-vs-Ipc"><span class="toc-text">Rpc vs. Ipc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RPC"><span class="toc-text">RPC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPC"><span class="toc-text">IPC</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
   
   <article class="card card-content categories-widget">
     <div class="categories-card">
@@ -431,102 +491,21 @@
   </article>
   
   
-    <article class="card card-content widescreen-archive archive-widget">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">8</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
-  
 </div>
             </aside>
             <aside class="right-column">
               <div class="sticky-widescreen">
   
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RpcInterface"><span class="toc-text">RpcInterface</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-text">Overview</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Rpc-vs-Ipc"><span class="toc-text">Rpc vs. Ipc</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RPC"><span class="toc-text">RPC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPC"><span class="toc-text">IPC</span></a></li></ol></li></ol>
+    </article>
   
   
   <article class="card card-content">
@@ -563,97 +542,6 @@
 </div>
   </article>
   
-  
-    <article class="card card-content">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">8</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
   
 </div>
             </aside>
@@ -756,6 +644,36 @@
 </a> 
      
      
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
      
      
     <script src="/js/main.js"></script> 

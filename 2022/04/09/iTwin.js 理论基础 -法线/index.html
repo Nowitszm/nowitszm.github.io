@@ -18,17 +18,17 @@
   <link 
     rel="icon" 
     href="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
-  <title>Categories</title>
+  <title>iTwin.js 理论基础 - 法线</title>
   
     
       <meta 
         property="og:title" 
-        content="Categories">
+        content="iTwin.js 理论基础 - 法线">
     
     
       <meta 
         property="og:url" 
-        content="http://example.com/categories/Cloud/index.html">
+        content="http://example.com/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/index.html">
     
     
       <meta 
@@ -36,6 +36,26 @@
         content="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
     
     
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-04-09">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-07-03">
+      <meta 
+        property="og:article:author" 
+        content="Zeming Li">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
     
   
   <script>
@@ -140,6 +160,8 @@
   
   <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
   
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
 <meta name="generator" content="Hexo 6.2.0"></head>
 
   <body>
@@ -223,49 +245,126 @@
         <div class="container">
           <div class="columns">
             <main class="main-column">
-<div class="card card-content category-page-card">
-  <div class="categories-page-title">Categories&nbsp-&nbspCloud</div>
-</div>
-<div class="archive-timeline">
-  
-  
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - 法线
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-04-09T13:05:24.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-04-09</span>
+    </time>
     
-      <div class="archive-timeline-tag"><span>2022</span></div>
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/computer-graphics/" 
+          class="post-meta-link">
+          computer graphics
+        </a>
       
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2022-05-19</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2022/05/19/%E8%AE%A1%E7%AE%97%E8%99%9A%E6%8B%9F%E5%8C%96/" 
-              class="archive-timeline-post-item">
-              计算虚拟化
-            </a>
-          </div>
-        </div>
+    
+      <span class="dot"></span>
+      <span>888 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
       </div>
     </div>
   
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h1 id="Using-Surface-normals"><a href="#Using-Surface-normals" class="headerlink" title="Using Surface normals"></a>Using Surface normals</h1><hr>
+<h2 id="Coarse-facets-on-a-smooth-surface"><a href="#Coarse-facets-on-a-smooth-surface" class="headerlink" title="Coarse facets on a smooth surface"></a>Coarse facets on a smooth surface</h2><hr>
+<p>下图是光滑曲面的贴图，表现为4✖6的切面网格，并画出了所有的切面边缘：<br><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/1.png" class="lozad post-image"><br>下面是相同切面的两个着色图像，没有显示边缘。由于阴影差异，左侧的边缘仍然清晰可见。刻面的块状效果非常明显。但是在右边，表面看起来更光滑。仔细观察块状版本，每个切面都有一个单一的灰度阴影。由于从一个块状灰度到下一个块状灰度的跳跃，边缘是清晰可见的。但在光滑的版本中，灰度在每个区块内平滑变化，而在边缘没有变化。<br><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/2.png" class="lozad post-image"><br>这种差异是由于使用了面的法线–指向面外的向量。<br>这是一张特写，显示了(a)整个左下角的切面和(b)右边和上面的小部分相邻。在顶点附近的角落里，也出现了一些短的黄线，指向远离切面的地方。仔细观察完整的左下角切面–你可以看到这4条黄线都正好垂直于切面的平面。但是，来自相邻刻面角落的非常近的线条却以稍微不同的角度倾斜，因为相邻刻面在不同的平面上。<br><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/3.png" class="lozad post-image"><br>这里是同一角的特写，是更平滑的图像。在这种情况下，”靠近每个顶点 “的黄线是与同一顶点的邻居平行的，而不是与同一面上远处的其他人平行。这个方向最好是取自真正的分析性原始面（围绕一条线旋转的圆弧）。如果不知道原始面的方程，使用2个或4个面的平均值也很好。在任何一种情况下，图形软件和硬件都会使用这些法线来估计整个面反射的光线的平滑变化，从而产生巨大的图像质量改善。<br><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/4.png" class="lozad post-image"></p>
+<h2 id="Introducing-sharp-interior-edges"><a href="#Introducing-sharp-interior-edges" class="headerlink" title="Introducing sharp interior edges"></a>Introducing sharp interior edges</h2><hr>
+<p>此处是相同数量的刻面，具有相同的网格结构，但上部 4 个刻面向下折叠到一个平面上，该平面与光滑表面的其余部分明显不同。当没有绘制边时，我们希望看到下部 - 弯曲的部分 - 像以前一样平滑地显示。平坦部分的内部全部位于平面中，并且它应该在连接弯曲部分的急转弯边缘处具有明显的边缘。<br><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/5.png" class="lozad post-image"><br>这里有三张没有画边的图片：</p>
+<ul>
+<li>左侧图形显示刻面之间有清晰可见的断点；</li>
+<li>中间图形整体显示平滑；</li>
+<li>右侧图形在弯曲部分是光滑的，有清晰的断点，在共面内是平的。</li>
+</ul>
+<p><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/6.png" class="lozad post-image"><br>同样，显示变化是由于在每个刻面的每个角上呈现的表面法线。</p>
+<ul>
+<li>左边图形每个面的角都得到该面自身平面的法线，当然在该顶点与其他面有一个明显的角度。</li>
+<li>中间图形每个顶点附近的所有角落都得到一个来自所有（2或4个）入射面的平均法线。在光滑部分，这很完美。但是在折叠边缘，单一的法线对于任何一方都不是正确的。</li>
+<li>右侧图形法线从折叠平面或曲面正确拉出。因此，在折叠的每个顶点处都有多个不同的法线值。</li>
+</ul>
+<p><img src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/09/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%E6%B3%95%E7%BA%BF/7.png" class="lozad post-image"><br>这种共享共同边缘的混合效果显示在机械模型中普遍存在。</p>
+
+  </div>
+  <div>
     
-    <div class="archive-timeline-item">
-      <div class="archive-timeline-post">
-        <div class="card card-content">
-          <div class="archive-timeline-post-date">2022-05-14</div>
-          <div class="archive-timeline-post-content">
-            <a 
-              href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/" 
-              class="archive-timeline-post-item">
-              虚拟化
-            </a>
-          </div>
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - PRC接口 </div>
+          
         </div>
-      </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - 曲线 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
     </div>
   
 </div>
-</main>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Using-Surface-normals"><span class="toc-text">Using Surface normals</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Coarse-facets-on-a-smooth-surface"><span class="toc-text">Coarse facets on a smooth surface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introducing-sharp-interior-edges"><span class="toc-text">Introducing sharp interior edges</span></a></li></ol></li></ol>
+</div></main>
             <aside class="left-column">
               
               <div class="card card-author">
@@ -326,6 +425,18 @@
                <div class="sticky-tablet">
   
   
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Using-Surface-normals"><span class="toc-text">Using Surface normals</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Coarse-facets-on-a-smooth-surface"><span class="toc-text">Coarse facets on a smooth surface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introducing-sharp-interior-edges"><span class="toc-text">Introducing sharp interior edges</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
   
   <article class="card card-content categories-widget">
     <div class="categories-card">
@@ -382,102 +493,21 @@
   </article>
   
   
-    <article class="card card-content widescreen-archive archive-widget">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">8</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
-  
 </div>
             </aside>
             <aside class="right-column">
               <div class="sticky-widescreen">
   
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Using-Surface-normals"><span class="toc-text">Using Surface normals</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Coarse-facets-on-a-smooth-surface"><span class="toc-text">Coarse facets on a smooth surface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introducing-sharp-interior-edges"><span class="toc-text">Introducing sharp interior edges</span></a></li></ol></li></ol>
+    </article>
   
   
   <article class="card card-content">
@@ -514,97 +544,6 @@
 </div>
   </article>
   
-  
-    <article class="card card-content">
-      <div class="archive-card">
-  <div class="archive-card-header">
-    <i 
-      class="iconfont icon-wodebaobiao" 
-      style="padding-right: 2px;">
-    </i>Archive
-  </div>
-  <div class="archive-card-list">
-    
-    
-    
-      
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-          <a 
-            href="/archives/2022" 
-            class="archive-card-list-item">
-            2022
-            <span class="archive-card-list-item-badge">8</span>
-          </a>
-        
-        
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-      
-        
-      
-    
-    
-      <a 
-        href="/archives/2021" 
-        class="archive-card-list-item">
-        2021
-        <span class="archive-card-list-item-badge">6</span>
-      </a>
-    
-  </div>
-</div>
-    </article>
   
 </div>
             </aside>
@@ -707,6 +646,36 @@
 </a> 
      
      
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
      
      
     <script src="/js/main.js"></script> 
