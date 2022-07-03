@@ -28,7 +28,7 @@
     
       <meta 
         property="og:url" 
-        content="http://example.com/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/index.html">
+        content="http://example.com/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/index.html">
     
     
       <meta 
@@ -42,7 +42,7 @@
         content="article">
       <meta 
         property="og:article:published_time" 
-        content="2022-04-05">
+        content="2022-04-07">
       <meta 
         property="og:article:modified_time" 
         content="2022-07-03">
@@ -252,12 +252,12 @@
     </h1>
   </header>
   <div class="post-meta post-show-meta">
-    <time datetime="2022-04-05T05:55:55.000Z">
+    <time datetime="2022-04-07T05:55:55.000Z">
       <i 
         class="iconfont icon-calendar" 
         style="margin-right: 2px;">
       </i>
-      <span>2022-04-05</span>
+      <span>2022-04-07</span>
     </time>
     
       <span class="dot"></span>
@@ -303,14 +303,14 @@
 <li>线段是一条直线的一部分</li>
 <li>Json Fragment: <code>[&#123;&quot;lineSegment&quot;:[[0,0,0], [3,0,0]]&#125;</code></li>
 <li>typescript object:<pre class="highlight"><span class="line"><span class="keyword">const</span> myLineSegment = <span class="title class_">LineSegment</span>.<span class="property">create</span> (<span class="title class_">Point3</span>d.<span class="property">create</span> (<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>), <span class="title class_">Point3</span>d.<span class="title function_">create</span>(<span class="number">6</span>,<span class="number">4</span>,<span class="number">2</span>));</span><br></pre>
-<img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/1.png" class="lozad post-image"><pre class="highlight"><span class="line">A = start point</span><br><span class="line">B = end point</span><br><span class="line">f = fraction varying from 0 to 1</span><br><span class="line">Point X(f) at fractional position f along the lineSegment is</span><br><span class="line">  X(f) = (1-f) * A + f * B</span><br></pre></li>
+<img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/1.png" class="lozad post-image"><pre class="highlight"><span class="line">A = start point</span><br><span class="line">B = end point</span><br><span class="line">f = fraction varying from 0 to 1</span><br><span class="line">Point X(f) at fractional position f along the lineSegment is</span><br><span class="line">  X(f) = (1-f) * A + f * B</span><br></pre></li>
 </ul>
 <h3 id="lineString"><a href="#lineString" class="headerlink" title="lineString"></a>lineString</h3><ul>
 <li>LineString是一个点的数组，这些点由直线连接</li>
-<li>Json Fragment: <img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/2.png" class="lozad post-image"></li>
+<li>Json Fragment: <img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/2.png" class="lozad post-image"></li>
 <li>Typescript object:<pre class="highlight"><span class="line"><span class="keyword">const</span> myLineString = <span class="title class_">LineString</span>.<span class="property">create</span> ([point0, point1, point2 ....]);</span><br></pre></li>
 </ul>
-<p> <img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/3.png" class="lozad post-image"></p>
+<p> <img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/3.png" class="lozad post-image"></p>
 <h3 id="arcs-circular-and-elliptic"><a href="#arcs-circular-and-elliptic" class="headerlink" title="arcs (circular and elliptic)"></a>arcs (circular and elliptic)</h3><p>圆弧基元是圆弧或椭圆弧的一部分。一个完整的椭圆弧的方程需要一个中心点和两个矢量。部分圆弧的起点和终点由两个角度控制。<br>圆形和椭圆形情况的等式形式是相同的，判断给定的弧是否为圆形需要检查矢量坐标。<br>将角度映射到坐标到椭圆（或圆形）弧周围点的描边方程是</p>
 <pre class="highlight"><span class="line">C = center point</span><br><span class="line">U = vector from center point to 0-degree point</span><br><span class="line">V = vector from center point to 90-degree point.</span><br><span class="line">theta(θ) = angle</span><br><span class="line">X(theta) = C + cos (theta * U + sin(theta) * V</span><br></pre>
 <h3 id="True-Circles"><a href="#True-Circles" class="headerlink" title="True Circles"></a>True Circles</h3><hr>
@@ -321,7 +321,7 @@
 <li>对于右边的圆，向量U、V和仍然是相同的长度且垂直，但都旋转远离全局 x 和 y的位置。</li>
 <li>当圆弧条件为真时，方程中使用的角度是矢量和从中心到UX(theta)的矢量之间的实际物理角度。</li>
 </ul>
-<p><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/4.png" class="lozad post-image"></p>
+<p><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/4.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/4.png" class="lozad post-image"></p>
 <h3 id="Ellipse"><a href="#Ellipse" class="headerlink" title="Ellipse"></a>Ellipse</h3><hr>
 <p>如果和向量U和向量V有长度不同，则是椭圆。由于本文重点介绍iTwin.js绘制弧的机制，对数学方面的定义不做过多解释。</p>
 <h3 id="Angular-limits"><a href="#Angular-limits" class="headerlink" title="Angular limits"></a>Angular limits</h3><hr>
@@ -344,30 +344,30 @@
 <tbody><tr>
 <td>(0 to 360)</td>
 <td>360</td>
-<td><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/5.png" class="lozad post-image"></td>
+<td><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/5.png" class="lozad post-image"></td>
 </tr>
 <tr>
 <td>(0 to 135)</td>
 <td>135</td>
-<td><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/6.png" class="lozad post-image"></td>
+<td><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/6.png" class="lozad post-image"></td>
 </tr>
 <tr>
 <td>(270 to 495)</td>
 <td>225</td>
-<td><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/7.png" class="lozad post-image"></td>
+<td><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/7.png" class="lozad post-image"></td>
 </tr>
 <tr>
 <td>(90 to 270)</td>
 <td>180</td>
-<td><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/8.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/8.png" class="lozad post-image"></td>
+<td><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/8.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/8.png" class="lozad post-image"></td>
 </tr>
 <tr>
 <td>(90 to 405)</td>
 <td>315</td>
-<td><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/9.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/9.png" class="lozad post-image"></td>
+<td><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/9.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/9.png" class="lozad post-image"></td>
 </tr>
 </tbody></table>
-<p>Examples with json fragments <img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/10.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/10.png" class="lozad post-image"><br><img src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/11.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/11.png" class="lozad post-image"></p>
+<p>Examples with json fragments <img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/10.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/10.png" class="lozad post-image"><br><img src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/11.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/11.png" class="lozad post-image"></p>
 <h1 id="bspline-curves"><a href="#bspline-curves" class="headerlink" title="bspline curves"></a>bspline curves</h1><hr>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><hr>
 
@@ -380,13 +380,13 @@
   
     <div class="nav-item-prev">
       <a 
-        href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/" 
+        href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/" 
         class="nav-link">
         <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
           <div class="nav-label">Prev</div>
           
-            <div class="nav-title">iTwin.js 理论基础 - Lod优化 </div>
+            <div class="nav-title">虚拟化 </div>
           
         </div>
       </a>
@@ -395,12 +395,12 @@
   
     <div class="nav-item-next">
       <a 
-        href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/" 
+        href="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/" 
         class="nav-link">
         <div>
           <div class="nav-label">Next</div>
           
-            <div class="nav-title">iTwin.js 理论基础 - 渲染系统 </div>
+            <div class="nav-title">iTwin.js 理论基础 - Lod优化 </div>
           
         </div>
         <i class="iconfont icon-right nav-next-icon"></i>
@@ -437,7 +437,7 @@
   <a 
     class="author-posts-count" 
     href="/archives">
-    <span>10</span>
+    <span>11</span>
     <span>Posts</span>
   </a>
   <a 
@@ -513,7 +513,7 @@
       <a href="/categories/Cloud/">
         <div class="categories-list-item">
           Cloud
-          <span class="categories-list-item-badge">1</span>
+          <span class="categories-list-item-badge">2</span>
         </div>
       </a>
     
@@ -576,23 +576,23 @@
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-19</div>
+        <a href="/2022/05/19/%E8%AE%A1%E7%AE%97%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">计算虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-05-14</div>
         <a href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">虚拟化</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-04-07</div>
-        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
+        <a href="/2022/04/07/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 曲线</div></a>
       </div>
     
       <div class="recent-posts-item">
         <div class="recent-posts-item-title">2022-04-05</div>
-        <a href="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%9B%B2%E7%BA%BF/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 曲线</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-03-25</div>
-        <a href="/2022/03/25/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20%E6%B8%B2%E6%9F%93%E7%B3%BB%E7%BB%9F/"><div class="recent-posts-item-content">iTwin.js 理论基础 - 渲染系统</div></a>
+        <a href="/2022/04/05/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20LOD%E4%BC%98%E5%8C%96/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Lod优化</div></a>
       </div>
     
   </div>
