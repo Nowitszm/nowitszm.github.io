@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+  <title>iTwin.js 理论基础 - Unreal引擎</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js 理论基础 - Unreal引擎">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-04-13">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-07-03">
+      <meta 
+        property="og:article:author" 
+        content="Zeming Li">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 理论基础 - Unreal引擎
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-04-13T02:23:11.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-04-13</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/computer-graphics/" 
+          class="post-meta-link">
+          computer graphics
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>1.2k words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>使用iTwin Exporter for Datasmith应用程序可以将iModel数据导出Datasmith格式，并将其导入Unreal Engine中。</p>
+<h1 id="部署环境"><a href="#部署环境" class="headerlink" title="部署环境"></a>部署环境</h1><h2 id="1-Unreal-Engine"><a href="#1-Unreal-Engine" class="headerlink" title="1.Unreal Engine"></a>1.Unreal Engine</h2><hr>
+<p>安装<a target="_blank" rel="noopener" href="https://www.unrealengine.com/en-US/download">Unreal Engine</a> 4.26.1或更高版本，在iTwin Exporter for Datasmith应用程序之前安装Unreal引擎，因为该应用程序需要一些Unreal引擎的组件。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/1.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/1.png" class="lozad post-image"></p>
+<h2 id="2-iTwin-Exporter-for-Datasmith"><a href="#2-iTwin-Exporter-for-Datasmith" class="headerlink" title="2.iTwin Exporter for Datasmith"></a>2.iTwin Exporter for Datasmith</h2><hr>
+<p>通过单击<a target="_blank" rel="noopener" href="https://developer.bentley.com/unreal/">此处</a>的”立即下载”来下载安装程序，然后运行安装程序将完成安装。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/2.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/2.png" class="lozad post-image"></p>
+<h2 id="3-Visual-Studio"><a href="#3-Visual-Studio" class="headerlink" title="3.Visual Studio"></a>3.Visual Studio</h2><hr>
+<p>安装<a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/downloads"> Visual Studio</a>，并安装了”使用 C++进行游戏开发”和”.NET 桌面开发”工作负载。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/3.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/3.png" class="lozad post-image"></p>
+<h1 id="使用教程"><a href="#使用教程" class="headerlink" title="使用教程"></a>使用教程</h1><h2 id="1-选择iModel"><a href="#1-选择iModel" class="headerlink" title="1.选择iModel"></a>1.选择iModel</h2><hr>
+<p><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/4.gif" alt="bbb.gif" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/4.gif" class="lozad post-image"><br>适用于 Datasmith 的 iTwin 导出程序将打开登录页面。点击”登录”按钮，系统将提示您通过默认浏览器登录。这将带您进入最近项目的iModel选择屏幕。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/5.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/5.png" class="lozad post-image"></p>
+<ol>
+<li>要访问其他项目，请选择标题中的项目下拉列表，然后选择一个最近的项目，或单击”<strong>查看我的所有项目</strong>“以打开**”项目选择”屏幕**。</li>
+</ol>
+<p><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/6.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/6.png" class="lozad post-image"></p>
+<h2 id="2-将iModel导出为Datasmith"><a href="#2-将iModel导出为Datasmith" class="headerlink" title="2.将iModel导出为Datasmith"></a>2.将iModel导出为Datasmith</h2><hr>
+<p>选择项目并找到 iModel 后，您可以点按”导出”按钮立即执行导出。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/7.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/7.png" class="lozad post-image"></p>
+<ol>
+<li>这将打开**”高级导出”对话框<strong>，您可以从中切换</strong>“合并所有网格”切换<strong>，然后按对话框底部的</strong>“确认导出”按钮**。</li>
+</ol>
+<p><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/8.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/8.png" class="lozad post-image"><br>注意：上图中的（x，y，z）并非模型坐标，与MS中的ACS坐标不同。此值为偏移量，通过添加（x，y，z）的矢量来偏移几何图形。默认iModel在Unreal space的中心点是（0，0，0）。</p>
+<ol start="2">
+<li>只需按下按钮，然后使用系统的”保存文件”对话框，即可选择以什么名称以及在哪里保存生成的 datasmith 内容。然后等待导出完成，这表示出现绿色成功消息。</li>
+<li>您也可以单击 iModel 卡片的图像或其**”查看按钮”**进入查看器，并可以使用左上角水平工具栏中最左侧的按钮运行组合网格导出。</li>
+</ol>
+<p><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/9.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/9.png" class="lozad post-image"></p>
+<h3 id="2-1-导出结果"><a href="#2-1-导出结果" class="headerlink" title="2.1 导出结果"></a>2.1 导出结果</h3><hr>
+<p>导出完成后，您应该在所选的导出位置中拥有一个命名的文件，例如，一个与前缀同名的文件夹。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/10.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/10.png" class="lozad post-image"></p>
+<h2 id="3-导入iModel至Unreal引擎"><a href="#3-导入iModel至Unreal引擎" class="headerlink" title="3. 导入iModel至Unreal引擎"></a>3. 导入iModel至Unreal引擎</h2><hr>
+<h3 id="3-1-在Unreal引擎中创建项目"><a href="#3-1-在Unreal引擎中创建项目" class="headerlink" title="3.1 在Unreal引擎中创建项目"></a>3.1 在Unreal引擎中创建项目</h3><p>我们建议使用”建筑，工程和施工”模板，以便启用所需的Datasmith导入器插件。如果您选择不这样做，则需要在项目的设置中自行启用该插件。Unreal<a target="_blank" rel="noopener" href="https://docs.unrealengine.com/4.27/en-US/Basics/Projects/Browser/">指南</a>。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/11.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/11.png" class="lozad post-image"></p>
+<h3 id="3-2-安装iTwin-Unreal-Datasmith插件"><a href="#3-2-安装iTwin-Unreal-Datasmith插件" class="headerlink" title="3.2 安装iTwin Unreal Datasmith插件"></a>3.2 安装iTwin Unreal Datasmith插件</h3><p>现在，我们可以导航回选择屏幕，并使用插件安装程序按钮将iTwin虚幻Datasmith插件安装到我们的虚幻项目中。点击左上角的”主页”按钮，或使用项目下拉列表，然后按”查看我的所有项目”选项导航回”项目选择”屏幕。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/12.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/12.png" class="lozad post-image"><br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/13.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/13.png" class="lozad post-image"><br>在选择屏幕中，您可以按应用程序底部的蓝色”安装插件”按钮，然后在文件对话框中找到属于您创建的Unreal项目的文件。只需选择该文件，插件就会安装到该项目中。<br>确保关闭并重新打开虚幻项目（如果已打开）。自安装以来首次打开项目时，它将提示重新构建插件。它是为不同的引擎版本设计的，但你可以忽略这一点，并告诉它继续构建。如果重建失败，请确保您已满足所有先决条件，因为如果您使用的是不受支持的虚幻引擎版本或未正确安装所需的Visual Studio工作负载，则重建可能会失败。</p>
+<h3 id="3-3-导入iModel"><a href="#3-3-导入iModel" class="headerlink" title="3.3 导入iModel"></a>3.3 导入iModel</h3><p>在Unreal引擎编辑器中，使用Datasmith导入按钮打开文件系统对话框，然后选择您的文件以将其导入到场景中。<br>选择一个文件夹，将Datasmith导入的内容放入内容浏览器中，然后更改您需要的任何其他导入设置，例如，如果您只使用动态光源来照亮虚幻引擎中的场景，则禁用光照贴图UV生成。然后只需等待导入过程完成即可。<br><img src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/14.png" alt="image.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/13/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E/14.png" class="lozad post-image"></p>
+<h2 id="4-Unreal-Engine-以下均为UE4引擎使用方法，请参阅UE4教学文档"><a href="#4-Unreal-Engine-以下均为UE4引擎使用方法，请参阅UE4教学文档" class="headerlink" title="4. Unreal Engine(以下均为UE4引擎使用方法，请参阅UE4教学文档)"></a>4. Unreal Engine(以下均为UE4引擎使用方法，请参阅UE4教学文档)</h2><p>Unreal在内容浏览器中打开，然后将材质拖放到静态网格体上。我们拖拽并放下一些玻璃、混凝土、金属、草、木头和鹅卵石到我们的场景中，看到一些高保真材料。我们的示例场景尤其受益于过滤掉树木和草地模型，并用更逼真或动画的模型替换它们，但这是虚幻项目中需要探索的东西。<br>![image.png].&#x2F;iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unreal%E5%BC%95%E6%93%8E&#x2F;15.png)</p>
+<h3 id><a href="#" class="headerlink" title></a></h3>
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/04/16/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unity%E5%BC%95%E6%93%8E/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - Unity引擎 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/04/12/iTwin.js%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80%20-%20RPC%E6%8E%A5%E5%8F%A3/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - PRC接口 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83"><span class="toc-text">部署环境</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Unreal-Engine"><span class="toc-text">1.Unreal Engine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-iTwin-Exporter-for-Datasmith"><span class="toc-text">2.iTwin Exporter for Datasmith</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Visual-Studio"><span class="toc-text">3.Visual Studio</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-text">使用教程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%89%E6%8B%A9iModel"><span class="toc-text">1.选择iModel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B0%86iModel%E5%AF%BC%E5%87%BA%E4%B8%BADatasmith"><span class="toc-text">2.将iModel导出为Datasmith</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AF%BC%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="toc-text">2.1 导出结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AF%BC%E5%85%A5iModel%E8%87%B3Unreal%E5%BC%95%E6%93%8E"><span class="toc-text">3. 导入iModel至Unreal引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%9C%A8Unreal%E5%BC%95%E6%93%8E%E4%B8%AD%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">3.1 在Unreal引擎中创建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%89%E8%A3%85iTwin-Unreal-Datasmith%E6%8F%92%E4%BB%B6"><span class="toc-text">3.2 安装iTwin Unreal Datasmith插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%AF%BC%E5%85%A5iModel"><span class="toc-text">3.3 导入iModel</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Unreal-Engine-%E4%BB%A5%E4%B8%8B%E5%9D%87%E4%B8%BAUE4%E5%BC%95%E6%93%8E%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%EF%BC%8C%E8%AF%B7%E5%8F%82%E9%98%85UE4%E6%95%99%E5%AD%A6%E6%96%87%E6%A1%A3"><span class="toc-text">4. Unreal Engine(以下均为UE4引擎使用方法，请参阅UE4教学文档)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Zeming Li</p>
+<p class="author-description"></p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>16</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>2</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>2</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://wx1.sinaimg.cn/bmiddle/e61078cely1h3fpbv07p8j20by0byjry.jpg">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://www.linkedin.cn/in/zeming-li-2b9865147">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83"><span class="toc-text">部署环境</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Unreal-Engine"><span class="toc-text">1.Unreal Engine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-iTwin-Exporter-for-Datasmith"><span class="toc-text">2.iTwin Exporter for Datasmith</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Visual-Studio"><span class="toc-text">3.Visual Studio</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-text">使用教程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%89%E6%8B%A9iModel"><span class="toc-text">1.选择iModel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B0%86iModel%E5%AF%BC%E5%87%BA%E4%B8%BADatasmith"><span class="toc-text">2.将iModel导出为Datasmith</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AF%BC%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="toc-text">2.1 导出结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AF%BC%E5%85%A5iModel%E8%87%B3Unreal%E5%BC%95%E6%93%8E"><span class="toc-text">3. 导入iModel至Unreal引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%9C%A8Unreal%E5%BC%95%E6%93%8E%E4%B8%AD%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">3.1 在Unreal引擎中创建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%89%E8%A3%85iTwin-Unreal-Datasmith%E6%8F%92%E4%BB%B6"><span class="toc-text">3.2 安装iTwin Unreal Datasmith插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%AF%BC%E5%85%A5iModel"><span class="toc-text">3.3 导入iModel</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Unreal-Engine-%E4%BB%A5%E4%B8%8B%E5%9D%87%E4%B8%BAUE4%E5%BC%95%E6%93%8E%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%EF%BC%8C%E8%AF%B7%E5%8F%82%E9%98%85UE4%E6%95%99%E5%AD%A6%E6%96%87%E6%A1%A3"><span class="toc-text">4. Unreal Engine(以下均为UE4引擎使用方法，请参阅UE4教学文档)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/computer-graphics/">
+        <div class="categories-list-item">
+          computer-graphics
+          <span class="categories-list-item-badge">14</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Cloud/">
+        <div class="categories-list-item">
+          Cloud
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+      <a 
+        href="/tags/Linux-and-cloud/" 
+        title="Linux and cloud">
+        <div class="tags-list-item">Linux and cloud</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83"><span class="toc-text">部署环境</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Unreal-Engine"><span class="toc-text">1.Unreal Engine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-iTwin-Exporter-for-Datasmith"><span class="toc-text">2.iTwin Exporter for Datasmith</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Visual-Studio"><span class="toc-text">3.Visual Studio</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-text">使用教程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%89%E6%8B%A9iModel"><span class="toc-text">1.选择iModel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B0%86iModel%E5%AF%BC%E5%87%BA%E4%B8%BADatasmith"><span class="toc-text">2.将iModel导出为Datasmith</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AF%BC%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="toc-text">2.1 导出结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AF%BC%E5%85%A5iModel%E8%87%B3Unreal%E5%BC%95%E6%93%8E"><span class="toc-text">3. 导入iModel至Unreal引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%9C%A8Unreal%E5%BC%95%E6%93%8E%E4%B8%AD%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">3.1 在Unreal引擎中创建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%89%E8%A3%85iTwin-Unreal-Datasmith%E6%8F%92%E4%BB%B6"><span class="toc-text">3.2 安装iTwin Unreal Datasmith插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%AF%BC%E5%85%A5iModel"><span class="toc-text">3.3 导入iModel</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Unreal-Engine-%E4%BB%A5%E4%B8%8B%E5%9D%87%E4%B8%BAUE4%E5%BC%95%E6%93%8E%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%EF%BC%8C%E8%AF%B7%E5%8F%82%E9%98%85UE4%E6%95%99%E5%AD%A6%E6%96%87%E6%A1%A3"><span class="toc-text">4. Unreal Engine(以下均为UE4引擎使用方法，请参阅UE4教学文档)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li></ol></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-19</div>
+        <a href="/2022/05/19/%E8%AE%A1%E7%AE%97%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">计算虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-14</div>
+        <a href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-25</div>
+        <a href="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/"><div class="recent-posts-item-content">iTwin.js 开发实践 - 绘制功能</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-16</div>
+        <a href="/2022/04/16/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unity%E5%BC%95%E6%93%8E/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Unity引擎</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>

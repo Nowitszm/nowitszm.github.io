@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta 
+    http-equiv="X-UA-Compatible" 
+    content="ie=edge">
+  <meta 
+    name="theme-color" 
+    content="#fff" 
+    id="theme-color">
+  <meta 
+    name="description" 
+    content="Hexo">
+  <link 
+    rel="icon" 
+    href="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+  <title>iTwin.js 开发实践 - 绘制功能</title>
+  
+    
+      <meta 
+        property="og:title" 
+        content="iTwin.js 开发实践 - 绘制功能">
+    
+    
+      <meta 
+        property="og:url" 
+        content="http://example.com/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/index.html">
+    
+    
+      <meta 
+        property="og:img" 
+        content="https://img1.imgtp.com/2022/07/02/cVEClbfX.png">
+    
+    
+    
+      <meta 
+        property="og:type" 
+        content="article">
+      <meta 
+        property="og:article:published_time" 
+        content="2022-04-25">
+      <meta 
+        property="og:article:modified_time" 
+        content="2022-07-03">
+      <meta 
+        property="og:article:author" 
+        content="Zeming Li">
+      
+        
+          <meta 
+            property="og:article:tag" 
+            content="iTwin Platform">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img"
+          width="32"
+          height="32"
+          src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Zeming's Wiki</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          Home
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          Archive
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          Tags
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          Categories
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      iTwin.js 开发实践 - 绘制功能
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-04-25T04:23:11.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2022-04-25</span>
+    </time>
+    
+      <span class="dot"></span>
+      
+        <a 
+          href="/categories/computer-graphics/" 
+          class="post-meta-link">
+          computer graphics
+        </a>
+      
+    
+    
+      <span class="dot"></span>
+      <span>784 words</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/iTwin-Platform/" 
+            class="post-meta-link">
+            iTwin Platform
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <p>描述：实现在视图中绘制图形，可以是点、线、面、也可以是三维实体（长方体、球、柱、锥）</p>
+<p>通过定义装饰器相关类，从<code>Decorator</code>类派生</p>
+<pre class="highlight"><span class="line"><span class="keyword">class</span> <span class="title class_">ShowLineTool</span> <span class="keyword">implements</span> <span class="title class_">Decorator</span> &#123;&#125;</span><br></pre>
+<p>实现<code>Decorator</code>方法</p>
+<pre class="highlight"><span class="line"><span class="title function_">decorate</span>(<span class="attr">context</span>: <span class="title class_">DecorateContext</span>): <span class="built_in">void</span> &#123;&#125;</span><br></pre>
+<h2 id="1-指定坐标点生成折线"><a href="#1-指定坐标点生成折线" class="headerlink" title="1.指定坐标点生成折线"></a>1.指定坐标点生成折线</h2><p><img src="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/1.gif" alt="drawline.gif" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/1.gif" class="lozad post-image"></p>
+<ul>
+<li>指定目标点坐标</li>
+</ul>
+<p><code>[Point3d ](https://www.itwinjs.org/reference/geometry-core/cartesiangeometry/point3d/)</code>：以<code>x</code>,<code>y</code>,<code>z</code>为属性的三维点</p>
+<pre class="highlight"><span class="line"><span class="comment">//指点目标点坐标    </span></span><br><span class="line"><span class="keyword">private</span> <span class="attr">_points</span>: <span class="title class_">Point3</span>d[] = [</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Point3</span>d(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Point3</span>d(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Point3</span>d(<span class="number">2</span>, <span class="number">5</span>, <span class="number">2</span>),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Point3</span>d(<span class="number">3</span>, <span class="number">6</span>, <span class="number">3</span>)</span><br><span class="line">    ];</span><br></pre>
+
+<ul>
+<li>创建装饰器<code>GraphicBuilder</code>，定义线性、颜色、线宽等参数</li>
+</ul>
+<p><code>createGraphicBuilder</code>：创建一个生成<code>RenderGraphic</code>的<code>builder</code>，适合在此<code>Viewport</code>中进行渲染。<br><code>setSymbology </code>：设置此<code>builder</code>的参数如：颜色、线性、线宽等。随后添加的任何新的几何体都将使用指定的参数绘制。<br><code>addLineString</code>：将一个3D线元素添加到<code>builder</code>中。<br><code>addDecorationFromBuilder</code>：在提供的<code>builder</code>上调用<code>GraphicBuilder.finish</code>以获得一个<code>RenderGraphic</code>，然后将该图形添加到相应的<code>Decorations</code>列表中。</p>
+<pre class="highlight"><span class="line"><span class="keyword">const</span> builder = context.<span class="title function_">createGraphicBuilder</span>(<span class="title class_">GraphicType</span>.<span class="property">WorldDecoration</span>);</span><br><span class="line">builder.<span class="title function_">setSymbology</span>(<span class="title class_">ColorDef</span>.<span class="property">green</span>, <span class="title class_">ColorDef</span>.<span class="property">green</span>, <span class="number">6</span>, <span class="title class_">LinePixels</span>.<span class="property">Solid</span>);</span><br><span class="line">builder.<span class="title function_">addLineString</span>(<span class="variable language_">this</span>.<span class="property">_points</span>);</span><br><span class="line">context.<span class="title function_">addDecorationFromBuilder</span>(builder);</span><br></pre>
+
+<ul>
+<li>实现<code>showLine</code>方法，对<code>ShowLineTool</code>初始化，并在初始化过后执行<code>addDecorator</code>方法，把上文创建的<code>builder</code>绘制到当前视图中。</li>
+</ul>
+<p><code>addDecorator</code>：添加一个新的装饰器，将<code>Decorations</code>显示在活动视图中。</p>
+<pre class="highlight"><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title function_">showLine</span>(<span class="params"></span>)&#123;</span><br><span class="line">      <span class="keyword">if</span>(!<span class="title class_">ShowLineTool</span>.<span class="property">draw</span>)&#123;</span><br><span class="line">          <span class="title class_">ShowLineTool</span>.<span class="property">draw</span> = <span class="keyword">new</span> <span class="title class_">ShowLineTool</span>();</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">if</span>(!<span class="title class_">ShowLineTool</span>.<span class="property">_isLoad</span>)&#123;</span><br><span class="line">          <span class="title class_">IModelApp</span>.<span class="property">viewManager</span>.<span class="title function_">addDecorator</span>(<span class="title class_">ShowLineTool</span>.<span class="property">draw</span>);</span><br><span class="line">      		<span class="title class_">ShowLineTool</span>.<span class="property">_isLoad</span> =  <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre>
+
+<ul>
+<li>在前端页面中添加该点击事件，直接调用即可。<pre class="highlight"><span class="line"><span class="keyword">const</span> <span class="title function_">showLine</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="title class_">ShowLineTool</span>.<span class="title function_">showLine</span>();</span><br><span class="line">&#125;;</span><br></pre></li>
+</ul>
+<p>装饰器，实现各种自定义的效果，不是在三维模型中创建，是显示在三维模型的viewport中。</p>
+<h2 id="2-鼠标取坐标点生成折线"><a href="#2-鼠标取坐标点生成折线" class="headerlink" title="2.鼠标取坐标点生成折线"></a>2.鼠标取坐标点生成折线</h2><p>描述：通过鼠标拾取视图的中坐标点，生成相应的折线类路径。支持精确捕捉，与Microstation系列建模软件相同操作。</p>
+<p><img src="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/2.gif" alt="qudian.gif" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/2.gif" class="lozad post-image"></p>
+<ul>
+<li>实现<code>DrawLineTool</code>类继承自<code>InputCollector</code></li>
+</ul>
+<p>定义一个<code>toolId</code>获取这个工具类的<code>toolId</code>字符串。这个字符串用于在<code>ToolRegistry</code>中识别该工具，并用于从当前的区域设置中对<code>keyin</code>、描述等进行本地化。<br><code>ToolRegistry</code>：持有一个<code>toolIds</code>和它们相应的Tool类之间的映射。这提供了一种机制，可以通过它们的toolId来寻找工具，同时也提供了一种方法来迭代可用的工具集。</p>
+<pre class="highlight"><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">DrawLineTool</span> <span class="keyword">extends</span> <span class="title class_ inherited__">InputCollector</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> toolId = <span class="string">&quot;ITwinWebApp.DrawLineTool&quot;</span>;</span><br><span class="line">  			<span class="comment">//开启精确捕捉</span></span><br><span class="line">        <span class="title function_">onPostInstall</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="variable language_">super</span>.<span class="title function_">onPostInstall</span>();</span><br><span class="line">            <span class="title class_">IModelApp</span>.<span class="property">accuSnap</span>.<span class="title function_">enableSnap</span>(<span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre>
+<p>实现添加坐标点的方法</p>
+<pre class="highlight"><span class="line"><span class="keyword">private</span> <span class="title function_">locPoint</span>(<span class="params">pt: Point3d</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_points</span>.<span class="title function_">push</span>(pt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title function_">addPoint</span>(<span class="params">pt: Point3d</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="title class_">ShowLineTool</span>.<span class="property">draw</span>) &#123;</span><br><span class="line">        <span class="title class_">ShowLineTool</span>.<span class="property">draw</span> = <span class="keyword">new</span> <span class="title class_">ShowLineTool</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title class_">ShowLineTool</span>.<span class="property">draw</span>.<span class="title function_">locPoint</span>(pt);</span><br><span class="line">&#125;</span><br></pre>
+<p>通过鼠标点击事件拾取坐标点，并将拾取坐标点添加到数组中，使用<code>ShowLineTool.showLine()</code>展示出来</p>
+<pre class="highlight"><span class="line"><span class="keyword">async</span> <span class="title function_">onDataButtonDown</span>(<span class="attr">_ev</span>: <span class="title class_">BeButtonEvent</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">EventHandled</span>&gt; &#123;</span><br><span class="line">      <span class="title class_">ShowLineTool</span>.<span class="title function_">addPoint</span>(_loc);</span><br><span class="line">      <span class="title class_">ShowLineTool</span>.<span class="title function_">showLine</span>();</span><br><span class="line">      <span class="keyword">return</span> <span class="title class_">EventHandled</span>.<span class="property">No</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">onResetButtonUp</span>(<span class="attr">_ev</span>: <span class="title class_">BeButtonEvent</span>): <span class="title class_">Promise</span>&lt;<span class="title class_">EventHandled</span>&gt; &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">exitTool</span>();</span><br><span class="line">      <span class="keyword">return</span> <span class="title class_">EventHandled</span>.<span class="property">No</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">onRestartTool</span>(): <span class="built_in">void</span> &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">exitTool</span>();</span><br><span class="line">  &#125;</span><br></pre>
+<p>在<code>startup()</code>执行时注册工具</p>
+<pre class="highlight"><span class="line"><span class="keyword">const</span> toolNamespace = <span class="title class_">IModelApp</span>.<span class="property">i18n</span>.<span class="title function_">registerNamespace</span>(<span class="string">&quot;SVTTools&quot;</span>);</span><br><span class="line"><span class="title class_">IModelApp</span>.<span class="property">tools</span>.<span class="title function_">register</span>(<span class="title class_">DrawLineTool</span> , toolNamespace);</span><br></pre>
+<p>在前端页面增加该点击事件，直接调用即可</p>
+<pre class="highlight"><span class="line"><span class="keyword">const</span> <span class="title function_">drawLine</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line"> <span class="title class_">IModelApp</span>.<span class="property">tools</span>.<span class="title function_">run</span>(<span class="title class_">DrawLineTool</span>.<span class="property">toolId</span>, <span class="title class_">IModelApp</span>.<span class="property">viewManager</span>.<span class="property">selectedView</span>);</span><br><span class="line">&#125;</span><br></pre>
+
+  </div>
+  <div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">Prev</div>
+          
+            <div class="nav-title">虚拟化 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/2022/04/16/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unity%E5%BC%95%E6%93%8E/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">Next</div>
+          
+            <div class="nav-title">iTwin.js 理论基础 - Unity引擎 </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%8C%87%E5%AE%9A%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">1.指定坐标点生成折线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%BC%A0%E6%A0%87%E5%8F%96%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">2.鼠标取坐标点生成折线</span></a></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="https://img1.imgtp.com/2022/07/02/cVEClbfX.png" 
+    class="author-img"
+    width="88"
+    height="88"
+    alt="author avatar">
+
+<p class="author-name">Zeming Li</p>
+<p class="author-description"></p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>16</span>
+    <span>Posts</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>2</span>
+    <span>Categories</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>2</span>
+    <span>Tags</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:zeming.lee@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://wx1.sinaimg.cn/bmiddle/e61078cely1h3fpbv07p8j20by0byjry.jpg">
+          <i class="iconfont icon-wechat society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://www.linkedin.cn/in/zeming-li-2b9865147">
+          <i class="iconfont icon-linkedin society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%8C%87%E5%AE%9A%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">1.指定坐标点生成折线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%BC%A0%E6%A0%87%E5%8F%96%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">2.鼠标取坐标点生成折线</span></a></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>Categories
+  </div>
+  <div class="categories-list">
+    
+      <a href="/categories/computer-graphics/">
+        <div class="categories-list-item">
+          computer-graphics
+          <span class="categories-list-item-badge">14</span>
+        </div>
+      </a>
+    
+      <a href="/categories/Cloud/">
+        <div class="categories-list-item">
+          Cloud
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>hot tags
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/iTwin-Platform/" 
+        title="iTwin Platform">
+        <div class="tags-list-item">iTwin Platform</div>
+      </a>
+    
+      <a 
+        href="/tags/Linux-and-cloud/" 
+        title="Linux and cloud">
+        <div class="tags-list-item">Linux and cloud</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>TOC
+</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%8C%87%E5%AE%9A%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">1.指定坐标点生成折线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%BC%A0%E6%A0%87%E5%8F%96%E5%9D%90%E6%A0%87%E7%82%B9%E7%94%9F%E6%88%90%E6%8A%98%E7%BA%BF"><span class="toc-text">2.鼠标取坐标点生成折线</span></a></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>Recent Posts
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-19</div>
+        <a href="/2022/05/19/%E8%AE%A1%E7%AE%97%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">计算虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-14</div>
+        <a href="/2022/05/14/%E8%99%9A%E6%8B%9F%E5%8C%96/"><div class="recent-posts-item-content">虚拟化</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-25</div>
+        <a href="/2022/04/25/iTwin.js%20%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5%20-%20%E7%BB%98%E5%88%B6%E5%8A%9F%E8%83%BD/"><div class="recent-posts-item-content">iTwin.js 开发实践 - 绘制功能</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-16</div>
+        <a href="/2022/04/16/iTwin.js%20%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%20-%20Unity%E5%BC%95%E6%93%8E/"><div class="recent-posts-item-content">iTwin.js 理论基础 - Unity引擎</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020
+          
+          
+                - 
+                2022
+          
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Zeming's Wiki
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+</footer>
+ 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton"
+  aria-label="menu button"
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+  </body>
+</html>
